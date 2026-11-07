@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>多狗协同搜索 Demo</title>
+<style>
+  body{margin:0;background:#0d1117;color:#e6edf3;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center}
+  h2{margin:12px 0 4px;font-size:18px}
+  #stats{font-family:Consolas,monospace;font-size:13px;color:#8b949e;margin:4px 0 8px}
+  canvas{border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+  #ctrl{margin:8px;display:flex;gap:12px;align-items:center}
+  button{padding:6px 16px;border-radius:6px;border:1px solid #30363d;background:#21262d;color:#e6edf3;cursor:pointer;font-size:13px}
+  button:hover{background:#30363d}
+  select{padding:4px 8px;background:#161b22;color:#e6edf3;border:1px solid #30363d;border-radius:4px}
+  .legend{display:flex;gap:16px;font-size:12px;color:#8b949e;margin-top:4px}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle}
+</style>
+</head>
+<body>
+<h2>多狗协同搜索 — 市场竞拍 + 分布式前沿</h2>
+<div id="stats">初始化...</div>
+<canvas id="cv"></canvas>
+<div id="ctrl">
+  <button onclick="reset()">重新开始</button>
+  <label>狗数 <select id="nDogs" onchange="reset()">
+    <option>4</option><option>6</option><option selected>10</option><option>12</option><option>16</option>
+  </select></label>
+  <label>失效 <select id="nFail" onchange="reset()">
+    <option value="0" selected>无</option><option value="3">3只</option><option value="5">5只</option>
+  </select></label>
+  <label><input type="checkbox" id="commOut" onchange="reset()"> 通信中断</label>
+</div>
+<div class="legend">
+  <span><span class="dot" style="background:#3d3d5c"></span>障碍</span>
+  <span><span class="dot" style="background:#263238"></span>已探索</span>
+  <span><span class="dot" style="background:#ff5252"></span>幸存者(未找到)</span>
+  <span><span class="dot" style="background:#4caf50"></span>幸存者(已找到)</span>
+</div>
+<script>
+const CELL=26,N=20,W=N*CELL;
+const cv=document.getElementById('cv');cv.width=W;cv.height=W;
+const ctx=cv.getContext('2d');
+const stats=document.getElementById('stats');
+const COLORS=['#4fc3f7','#ffb74d','#81c784','#e57373','#ba68c8','#4dd0e1','#f06292','#aed581','#ff8a65','#9575cd','#4db6ac','#fff176','#ff8a80','#7986cb','#a1887f','#90a4ae'];
+let sim,animId,step,found,commOutage;
+
+function rng(seed){let s=seed;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296}}
+
+function init(nDogs,seed){
+  const r=rng(seed);
+  const blocked=Array.from({length:N},()=>Array(N).fill(false));
+  for(let i=0;i<15;i++){
+    const x=Math.floor(r()*(N-4))+2,y=Math.floor(r()*(N-4))+2;
+    for(let dx=0;dx<1+Math.floor(r()*2);dx++)for(let dy=0;dy<1+Math.floor(r()*2);dy++)
+      if(x+dx<N&&y+dy<N)blocked[x+dx][y+dy]=true;
+  }
+  const free=[];for(let x=2;x<N-2;x++)for(let y=2;y<N-2;y++)if(!blocked[x][y])free.push([x,y]);
+  const targets=[];for(let i=0;i<4;i++)targets.push(free[Math.floor(r()*free.length)]);
+  const radius=4,cx=N/2,cy=N/2,dogs=[];
+  for(let i=0;i<nDogs;i++){
+    const a=2*Math.PI*i/nDogs;
+    let sx=Math.round(cx+radius*Math.cos(a)),sy=Math.round(cy+radius*Math.sin(a));
+    sx=Math.max(1,Math.min(N-2,sx));sy=Math.max(1,Math.min(N-2,sy));
+    dogs.push({id:i,pos:[sx,sy],alive:true,known:new Set(),assigned:null,visits:{}});
+  }
+  return{blocked,targets,dogs,found:new Set(),step:0,reassign:0};
+}
+
+function scan(dog){
+  const[x,y]=dog.pos.map(Math.round);
+  for(let dx=-3;dx<=3;dx++)for(let dy=-3;dy<=3;dy++){
+    if(dx*dx+dy*dy>9)continue;
+    const nx=x+dx,ny=y+dy;
+    if(nx>=0&&nx<N&&ny>=0&&ny<N)dog.known.add(nx+','+ny);
+  }
+}
+
+function frontiers(dog){
+  const out=[];
+  for(const k of dog.known){
+    const[x,y]=k.split(',').map(Number);
+    for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){
+      const nx=x+dx,ny=y+dy;
+      if(nx>=0&&nx<N&&ny>=0&&ny<N&&!sim.blocked[nx][ny]&&!dog.known.has(nx+','+ny))
+        out.push([nx,ny]);
+    }
+  }
+  return out;
+}
+
+function bid(dog,target){
+  const dist=Math.hypot(target[0]-dog.pos[0],target[1]-dog.pos[1]);
+  return 10/(1+dist);
+}
+
+function stepSim(){
+  sim.step++;step=sim.step;
+  const commOK=!(commOutage&&sim.step>15&&sim.step<50);
+
+  // 通信融合
+  if(commOK)for(const a of sim.dogs)if(a.alive)
+    for(const b of sim.dogs)if(b.alive&&a!==b)
+      for(const k of b.known)a.known.add(k);
+
+  // 竞拍
+  const idle=sim.dogs.filter(d=>d.alive&&!d.assigned);
+  const allF=new Set();
+  for(const d of sim.dogs)if(d.alive)for(const f of frontiers(d))allF.add(f.join(','));
+  sim.targets.forEach((t,i)=>{if(!sim.found.has(i))allF.add(t.join(','))});
+  const assigned=new Set(sim.dogs.filter(d=>d.assigned).map(d=>d.assigned.join(',')));
+  const cands=[...allF].filter(c=>!assigned.has(c)).map(c=>c.split(',').map(Number));
+  for(const d of idle){
+    let best=null,bb=-1;
+    for(const t of cands){const b=bid(d,t);if(b>bb){bb=b;best=t}}
+    if(best){d.assigned=best;cands.splice(cands.indexOf(best),1)}
+  }
+
+  // 移动
+  for(const d of sim.dogs){
+    if(!d.alive)continue;
+    scan(d);
+    if(!d.assigned)continue;
+    const[tx,ty]=d.assigned,dx=tx-d.pos[0],dy=ty-d.pos[1],dist=Math.hypot(dx,dy);
+    if(dist<0.5){d.assigned=null;continue}
+    d.pos[0]+=dx/dist*0.5;d.pos[1]+=dy/dist*0.5;
+    sim.targets.forEach((t,i)=>{
+      if(!sim.found.has(i)&&Math.hypot(d.pos[0]-t[0],d.pos[1]-t[1])<1.2)sim.found.add(i);
+    });
+  }
+  return sim.found.size===sim.targets.length;
+}
+
+function draw(){
+  ctx.fillStyle='#0d1117';ctx.fillRect(0,0,W,W);
+  const known=new Set();
+  sim.dogs.forEach(d=>{if(d.alive)d.known.forEach(k=>known.add(k))});
+
+  for(let x=0;x<N;x++)for(let y=0;y<N;y++){
+    const px=x*CELL,py=y*CELL;
+    if(sim.blocked[x][y]){ctx.fillStyle='#3d3d5c'}
+    else if(known.has(x+','+y)){ctx.fillStyle='#263238'}
+    else{ctx.fillStyle='#161b22'}
+    ctx.fillRect(px,py,CELL-1,CELL-1);
+  }
+
+  sim.targets.forEach((t,i)=>{
+    const cx=(t[0]+.5)*CELL,cy=(t[1]+.5)*CELL;
+    if(sim.found.has(i)){
+      ctx.fillStyle='#4caf50';ctx.beginPath();ctx.arc(cx,cy,8,0,7);ctx.fill();
+      ctx.fillStyle='#fff';ctx.font='bold 9px sans-serif';ctx.textAlign='center';ctx.fillText('✓',cx,cy+3);
+    }else{
+      ctx.strokeStyle='#ff5252';ctx.setLineDash([3,2]);ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(cx,cy,8,0,7);ctx.stroke();ctx.setLineDash([]);
+    }
+  });
+
+  sim.dogs.forEach(d=>{
+    if(!d.alive)return;
+    const cx=(d.pos[0]+.5)*CELL,cy=(d.pos[1]+.5)*CELL;
+    if(d.assigned){
+      ctx.strokeStyle=COLORS[d.id%16];ctx.setLineDash([2,3]);ctx.globalAlpha=.4;ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo((d.assigned[0]+.5)*CELL,(d.assigned[1]+.5)*CELL);ctx.stroke();
+      ctx.setLineDash([]);ctx.globalAlpha=1;
+    }
+    ctx.fillStyle=COLORS[d.id%16];
+    ctx.beginPath();ctx.moveTo(cx,cy-7);ctx.lineTo(cx-7,cy+5);ctx.lineTo(cx+7,cy+5);ctx.closePath();ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=.5;ctx.stroke();
+    ctx.fillStyle=COLORS[d.id%16];ctx.font='8px Consolas';ctx.textAlign='center';ctx.fillText(d.id,cx,cy+14);
+  });
+
+  const cov=Math.min(known.size/(N*N)*100,100);
+  stats.textContent=`步数=${sim.step}  找到=${sim.found.size}/4  存活=${sim.dogs.filter(d=>d.alive).length}/${sim.dogs.length}  覆盖=${cov.toFixed(0)}%`+(commOutage&&sim.step>15&&sim.step<50?'  ⚡通信中断':'');
+}
+
+function tick(){
+  const done=stepSim();
+  draw();
+  if(done){stats.textContent+=`  ✓ 全部找到!`;return}
+  animId=setTimeout(tick,60);
+}
+
+function reset(){
+  clearTimeout(animId);
+  const n=+document.getElementById('nDogs').value;
+  const fail=+document.getElementById('nFail').value;
+  commOutage=document.getElementById('commOut').checked;
+  sim=init(n,42);
+  // 施加失效
+  if(fail>0)setTimeout(()=>{
+    for(let i=0;i<fail&&i<sim.dogs.length;i++){
+      sim.dogs[i*3%sim.dogs.length].alive=false;
+      sim.dogs[i*3%sim.dogs.length].assigned=null;
+    }
+    sim.reassign+=fail;
+  },900);
+  step=0;
+  tick();
+}
+reset();
+</script>
+</body>
+</html>
