@@ -1,0 +1,13 @@
+{'scenario': 'dynamic', 'seed': 10122, 'mode': 'weighted_local_observed', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.8203084927129667, 'replans': 35, 'steps': 831, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1043.414346559601, 'path_m': 4.578269566655882, 'no_route': False}
+{'scenario': 'dynamic', 'seed': 10120, 'mode': 'weighted_local_observed', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.8118234661461154, 'replans': 35, 'steps': 826, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1019.9714987976752, 'path_m': 4.521270745284409, 'no_route': False}
+{'scenario': 'detour', 'seed': 10120, 'mode': 'weighted_local_observed', 'reference_clearance_m': None, 'success': True, 'fallen': False, 'collision': False, 'blocked': False, 'timeout': False, 'distance_m': 0.3472797699697951, 'replans': 88, 'steps': 2155, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 2651.6319914504825, 'path_m': 11.608800402501261, 'no_route': False}
+{'scenario': 'detour', 'seed': 10122, 'mode': 'weighted_local_observed', 'reference_clearance_m': None, 'success': True, 'fallen': False, 'collision': False, 'blocked': False, 'timeout': False, 'distance_m': 0.3499458765884425, 'replans': 98, 'steps': 2415, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 3011.212054616094, 'path_m': 13.056212716678008, 'no_route': False}
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_epwixcsj\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_ogmlwdey\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_9090ie50\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_l6_7sqnw\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+{'weighted_local_observed': {'cases': 4, 'arrivals': 2, 'blocked': 2, 'collisions': 0, 'falls': 0}}

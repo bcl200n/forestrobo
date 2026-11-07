@@ -1,0 +1,25 @@
+{'scenario': 'dynamic', 'seed': 10140, 'mode': 'weighted_local_observed', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.7961895169525204, 'replans': 35, 'steps': 827, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1041.9169317088001, 'path_m': 4.61164569215622, 'no_route': False}
+{'scenario': 'dynamic', 'seed': 10141, 'mode': 'weighted_local_observed', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.7104738445776455, 'replans': 35, 'steps': 834, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1018.6753185248533, 'path_m': 4.539584764427386, 'no_route': False}
+{'scenario': 'dynamic', 'seed': 10142, 'mode': 'weighted_local_observed', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.809263394466922, 'replans': 35, 'steps': 833, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1046.075833256275, 'path_m': 4.582279052325942, 'no_route': False}
+{'scenario': 'dynamic', 'seed': 10140, 'mode': 'weighted_route_progress', 'reference_clearance_m': None, 'success': True, 'fallen': False, 'collision': False, 'blocked': False, 'timeout': False, 'distance_m': 0.34479692339755413, 'replans': 99, 'steps': 2437, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 3032.732708131588, 'path_m': 13.299311230066461, 'no_route': False}
+{'scenario': 'dynamic', 'seed': 10141, 'mode': 'weighted_route_progress', 'reference_clearance_m': None, 'success': True, 'fallen': False, 'collision': False, 'blocked': False, 'timeout': False, 'distance_m': 0.3437240302253575, 'replans': 97, 'steps': 2384, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 2919.562013410149, 'path_m': 12.93849151745819, 'no_route': False}
+{'scenario': 'dynamic', 'seed': 10143, 'mode': 'weighted_local_observed', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.815651686944761, 'replans': 35, 'steps': 827, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1022.0852489372012, 'path_m': 4.526608857074146, 'no_route': False}
+{'scenario': 'dynamic', 'seed': 10142, 'mode': 'weighted_route_progress', 'reference_clearance_m': None, 'success': True, 'fallen': False, 'collision': False, 'blocked': False, 'timeout': False, 'distance_m': 0.349699996336566, 'replans': 99, 'steps': 2431, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 2994.179699733092, 'path_m': 13.21911167736967, 'no_route': False}
+{'scenario': 'dynamic', 'seed': 10143, 'mode': 'weighted_route_progress', 'reference_clearance_m': None, 'success': True, 'fallen': False, 'collision': False, 'blocked': False, 'timeout': False, 'distance_m': 0.34451035318787765, 'replans': 102, 'steps': 2509, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 3064.9686424328074, 'path_m': 13.565163667861912, 'no_route': False}
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_g4gm2n47\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_t9u9_mzv\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity__v6fsjj4\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_sx6fs4m9\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_yc99rtpr\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_z803ld_b\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_e00qxeqf\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_pze4ohsq\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+{'weighted_local_observed': {'cases': 4, 'arrivals': 0, 'blocked': 4, 'collisions': 0, 'falls': 0}, 'weighted_route_progress': {'cases': 4, 'arrivals': 4, 'blocked': 0, 'collisions': 0, 'falls': 0}}

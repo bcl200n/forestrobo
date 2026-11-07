@@ -1,0 +1,36 @@
+[
+  {
+    "id": "18f642e0-b353-47a1-a163-2593101447ec",
+    "host": "194892-ipv4mte.gr.global.aa-rt.sharepoint.com",
+    "destination": "",
+    "process": "",
+    "chains": [
+      "[Hy2][IISP]美国双ISP-0711-hy2",
+      "♻️ 自动选择",
+      "🚀 节点选择",
+      "Ⓜ️ 微软服务"
+    ],
+    "rule": "DomainSuffix",
+    "rulePayload": "sharepoint.com",
+    "upload": 75940,
+    "download": 37889646,
+    "start": "2026-11-08T00:30:01.6384977+08:00"
+  },
+  {
+    "id": "3caa1a8d-fbb7-4f80-a76b-6daa9f47b52e",
+    "host": "194892-ipv4mte.gr.global.aa-rt.sharepoint.com",
+    "destination": "",
+    "process": "",
+    "chains": [
+      "[anytls][IISP]美国双ISP-0711",
+      "♻️ 自动选择",
+      "🚀 节点选择",
+      "Ⓜ️ 微软服务"
+    ],
+    "rule": "DomainSuffix",
+    "rulePayload": "sharepoint.com",
+    "upload": 172481,
+    "download": 109229684,
+    "start": "2026-11-08T00:26:15.8934347+08:00"
+  }
+]

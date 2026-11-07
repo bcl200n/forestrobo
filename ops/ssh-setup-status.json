@@ -1,0 +1,5 @@
+﻿{
+    "message":  "sshd running; TCP 22 listening; Tailscale interface only; local address: 100.67.187.19; remote scope: 100.64.0.0/10; key-only login for user",
+    "stage":  "complete",
+    "updated":  "2026-11-06T19:09:55.3259724+08:00"
+}

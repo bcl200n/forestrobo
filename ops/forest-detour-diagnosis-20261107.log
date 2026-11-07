@@ -1,0 +1,73 @@
+{'scenario': 'detour', 'seed': 10110, 'mode': 'truth_map', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.081920165342088, 'replans': 39, 'steps': 947, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1365.0410917493666, 'path_m': 4.642543463751536, 'no_route': True}
+{'scenario': 'detour', 'seed': 10111, 'mode': 'truth_map', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.0247928369915655, 'replans': 48, 'steps': 1175, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1726.1685332579596, 'path_m': 6.271718549992551, 'no_route': False}
+{'scenario': 'detour', 'seed': 10110, 'mode': 'observed_map', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.081920165342088, 'replans': 39, 'steps': 947, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1365.0410917493666, 'path_m': 4.642543463751536, 'no_route': True}
+{'scenario': 'detour', 'seed': 10111, 'mode': 'observed_map', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.007243026566912, 'replans': 43, 'steps': 1034, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1574.4908539052105, 'path_m': 5.438070732400645, 'no_route': False}
+{'scenario': 'detour', 'seed': 10112, 'mode': 'truth_map', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.048976185680727, 'replans': 49, 'steps': 1178, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1714.692028665272, 'path_m': 6.250784870518387, 'no_route': False}
+{'scenario': 'detour', 'seed': 10112, 'mode': 'observed_map', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.0491197106837364, 'replans': 46, 'steps': 1109, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1770.1872661872844, 'path_m': 5.660880543444647, 'no_route': False}
+{'scenario': 'detour', 'seed': 10111, 'mode': 'checked_route', 'reference_clearance_m': 0.7085887848455994, 'success': True, 'fallen': False, 'collision': False, 'blocked': False, 'timeout': False, 'distance_m': 0.34921071736779863, 'replans': 80, 'steps': 1965, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 2385.792000245349, 'path_m': 10.51712231555004, 'no_route': False}
+{'scenario': 'detour', 'seed': 10110, 'mode': 'checked_route', 'reference_clearance_m': 0.755709908155243, 'success': True, 'fallen': False, 'collision': False, 'blocked': False, 'timeout': False, 'distance_m': 0.3481246497296347, 'replans': 83, 'steps': 2029, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 2463.9348425990584, 'path_m': 10.836770194677573, 'no_route': False}
+{'scenario': 'detour', 'seed': 10113, 'mode': 'truth_map', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.069718008718316, 'replans': 49, 'steps': 1177, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1762.3451554140172, 'path_m': 6.245876028313462, 'no_route': False}
+{'scenario': 'dynamic', 'seed': 10110, 'mode': 'observed_map', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.0234166231362924, 'replans': 39, 'steps': 948, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1095.019232207361, 'path_m': 3.8285490720189967, 'no_route': True}
+{'scenario': 'detour', 'seed': 10112, 'mode': 'checked_route', 'reference_clearance_m': 0.7441163244035806, 'success': True, 'fallen': False, 'collision': False, 'blocked': False, 'timeout': False, 'distance_m': 0.3452275233275862, 'replans': 80, 'steps': 1965, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 2404.53637832672, 'path_m': 10.551318452177924, 'no_route': False}
+{'scenario': 'dynamic', 'seed': 10110, 'mode': 'truth_map', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.0234166231362924, 'replans': 39, 'steps': 948, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1095.019232207361, 'path_m': 3.8285490720189967, 'no_route': True}
+{'scenario': 'detour', 'seed': 10113, 'mode': 'observed_map', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 2.8569940596368912, 'replans': 53, 'steps': 1296, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1933.7643229265173, 'path_m': 5.409517833527054, 'no_route': True}
+{'scenario': 'dynamic', 'seed': 10111, 'mode': 'truth_map', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 2.9487634167607464, 'replans': 36, 'steps': 865, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1217.5621683472114, 'path_m': 4.654358022039591, 'no_route': False}
+{'scenario': 'dynamic', 'seed': 10111, 'mode': 'observed_map', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 2.9487634167607464, 'replans': 36, 'steps': 865, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1217.5621683472114, 'path_m': 4.654358022039591, 'no_route': False}
+{'scenario': 'detour', 'seed': 10113, 'mode': 'checked_route', 'reference_clearance_m': 0.7181146725582586, 'success': True, 'fallen': False, 'collision': False, 'blocked': False, 'timeout': False, 'distance_m': 0.3448694732506644, 'replans': 80, 'steps': 1952, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 2403.0779015748244, 'path_m': 10.502404568572436, 'no_route': False}
+{'scenario': 'dynamic', 'seed': 10112, 'mode': 'truth_map', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.038598854506329, 'replans': 36, 'steps': 866, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1206.3333954312614, 'path_m': 4.676439027221598, 'no_route': False}
+{'scenario': 'dynamic', 'seed': 10112, 'mode': 'observed_map', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.038598854506329, 'replans': 36, 'steps': 866, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1206.3333954312614, 'path_m': 4.676439027221598, 'no_route': False}
+{'scenario': 'dynamic', 'seed': 10110, 'mode': 'checked_route', 'reference_clearance_m': 0.755709908155243, 'success': True, 'fallen': False, 'collision': False, 'blocked': False, 'timeout': False, 'distance_m': 0.3480213292946561, 'replans': 83, 'steps': 2030, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 2469.0876988311493, 'path_m': 10.843046351490488, 'no_route': False}
+{'scenario': 'dynamic', 'seed': 10113, 'mode': 'truth_map', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.0497996213520104, 'replans': 36, 'steps': 866, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1149.8118460054045, 'path_m': 4.722843863585563, 'no_route': False}
+{'scenario': 'dynamic', 'seed': 10111, 'mode': 'checked_route', 'reference_clearance_m': 0.7085887848455994, 'success': True, 'fallen': False, 'collision': False, 'blocked': False, 'timeout': False, 'distance_m': 0.3459593792366571, 'replans': 80, 'steps': 1966, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 2387.297646530519, 'path_m': 10.51960709727032, 'no_route': False}
+{'scenario': 'dynamic', 'seed': 10113, 'mode': 'observed_map', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 2.6828917131030243, 'replans': 44, 'steps': 1059, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 1420.19348946853, 'path_m': 4.906255015140319, 'no_route': True}
+{'scenario': 'dynamic', 'seed': 10112, 'mode': 'checked_route', 'reference_clearance_m': 0.7441163244035806, 'success': True, 'fallen': False, 'collision': False, 'blocked': False, 'timeout': False, 'distance_m': 0.3493357657620508, 'replans': 80, 'steps': 1965, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 2409.6629203769803, 'path_m': 10.558676831716804, 'no_route': False}
+{'scenario': 'dynamic', 'seed': 10113, 'mode': 'checked_route', 'reference_clearance_m': 0.7181146725582586, 'success': True, 'fallen': False, 'collision': False, 'blocked': False, 'timeout': False, 'distance_m': 0.3487477238295889, 'replans': 80, 'steps': 1951, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 2393.4995668744755, 'path_m': 10.47617995601541, 'no_route': False}
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_mnkzfvs8\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_kvqiah2d\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_ip5cesyn\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_obyxtg7a\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_7kavli6j\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_5kqzeml8\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_uhebfllr\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_2jwpy8ud\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_j9em7z37\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_l77kykde\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_e0gardz0\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_kjip7in5\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_a7823yo0\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_uu7vchix\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_n459fdk6\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_7ccob4oo\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_xrj_9xqy\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_1vlcwjv7\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_zvdrk4xt\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_fb0uf14f\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_vrsvdw87\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_5m9ywtm5\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_lxi2uqbc\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_6x5gws02\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+{'observed_map': {'cases': 8, 'arrivals': 0, 'blocked': 8, 'collisions': 0, 'falls': 0}, 'truth_map': {'cases': 8, 'arrivals': 0, 'blocked': 8, 'collisions': 0, 'falls': 0}, 'checked_route': {'cases': 8, 'arrivals': 8, 'blocked': 0, 'collisions': 0, 'falls': 0}}

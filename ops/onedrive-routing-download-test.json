@@ -1,0 +1,95 @@
+[
+  {
+    "time": "2026-11-08T00:43:57.459168",
+    "connections": [
+      {
+        "id": "2f7d60b8-72a5-4b40-a6fa-3cb3627e09c2",
+        "start": "2026-11-08T00:43:28.8148271+08:00",
+        "download": 1937439,
+        "upload": 3593,
+        "chains": [
+          "DIRECT"
+        ],
+        "rule": "ProcessName",
+        "rulePayload": "OneDrive.exe",
+        "host": "194892-ipv4mte.gr.global.aa-rt.sharepoint.com",
+        "process": "OneDrive.exe"
+      },
+      {
+        "id": "6aaaac82-2f27-4c02-8883-e7df67e1de63",
+        "start": "2026-11-08T00:43:06.7827804+08:00",
+        "download": 9969,
+        "upload": 7150,
+        "chains": [
+          "DIRECT"
+        ],
+        "rule": "ProcessName",
+        "rulePayload": "OneDrive.exe",
+        "host": "self.events.data.microsoft.com",
+        "process": "OneDrive.exe"
+      }
+    ]
+  },
+  {
+    "time": "2026-11-08T00:44:07.460656",
+    "connections": [
+      {
+        "id": "2f7d60b8-72a5-4b40-a6fa-3cb3627e09c2",
+        "start": "2026-11-08T00:43:28.8148271+08:00",
+        "download": 2599667,
+        "upload": 3593,
+        "chains": [
+          "DIRECT"
+        ],
+        "rule": "ProcessName",
+        "rulePayload": "OneDrive.exe",
+        "host": "194892-ipv4mte.gr.global.aa-rt.sharepoint.com",
+        "process": "OneDrive.exe"
+      },
+      {
+        "id": "6aaaac82-2f27-4c02-8883-e7df67e1de63",
+        "start": "2026-11-08T00:43:06.7827804+08:00",
+        "download": 9969,
+        "upload": 7150,
+        "chains": [
+          "DIRECT"
+        ],
+        "rule": "ProcessName",
+        "rulePayload": "OneDrive.exe",
+        "host": "self.events.data.microsoft.com",
+        "process": "OneDrive.exe"
+      }
+    ]
+  },
+  {
+    "time": "2026-11-08T00:44:17.462829",
+    "connections": [
+      {
+        "id": "2f7d60b8-72a5-4b40-a6fa-3cb3627e09c2",
+        "start": "2026-11-08T00:43:28.8148271+08:00",
+        "download": 3235067,
+        "upload": 3593,
+        "chains": [
+          "DIRECT"
+        ],
+        "rule": "ProcessName",
+        "rulePayload": "OneDrive.exe",
+        "host": "194892-ipv4mte.gr.global.aa-rt.sharepoint.com",
+        "process": "OneDrive.exe"
+      },
+      {
+        "id": "6aaaac82-2f27-4c02-8883-e7df67e1de63",
+        "start": "2026-11-08T00:43:06.7827804+08:00",
+        "download": 9969,
+        "upload": 7150,
+        "chains": [
+          "DIRECT"
+        ],
+        "rule": "ProcessName",
+        "rulePayload": "OneDrive.exe",
+        "host": "self.events.data.microsoft.com",
+        "process": "OneDrive.exe"
+      }
+    ]
+  }
+]

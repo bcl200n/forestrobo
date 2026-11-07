@@ -1,0 +1,62 @@
+{
+  "time": "2026-11-08T01:08:22.124984",
+  "route": "Microsoft proxy group",
+  "file": "E:\\onedrive\\古城模型哈\\gltf_work\\merged_low_tc.gltf",
+  "result": {
+    "elapsed_seconds": 11.203999999997905,
+    "bytes": 8369907,
+    "ok": true,
+    "sha256": "6d537f98f84aad72610e9b5a8fcdd2b6f071057a0e6123c804146d4d6c8e2189",
+    "gltf_version": "2.0",
+    "KB_per_sec": 747.0463227420175
+  },
+  "samples": [
+    {
+      "elapsed_seconds": 0.0,
+      "connections": []
+    },
+    {
+      "elapsed_seconds": 5.016,
+      "connections": [
+        {
+          "id": "528cb2be-30fb-4941-9457-85b2e56dd77b",
+          "start": "2026-11-08T01:08:11.2526506+08:00",
+          "download": 1106615,
+          "upload": 3126,
+          "chains": [
+            "[anytls][IISP]美国双ISP-0711",
+            "♻️ 自动选择",
+            "🚀 节点选择",
+            "Ⓜ️ 微软服务"
+          ],
+          "rule": "ProcessName",
+          "rulePayload": "OneDrive.exe",
+          "host": "194892-ipv4mte.gr.global.aa-rt.sharepoint.com",
+          "process": "OneDrive.exe"
+        }
+      ]
+    },
+    {
+      "elapsed_seconds": 10.032,
+      "connections": [
+        {
+          "id": "528cb2be-30fb-4941-9457-85b2e56dd77b",
+          "start": "2026-11-08T01:08:11.2526506+08:00",
+          "download": 6485427,
+          "upload": 3126,
+          "chains": [
+            "[anytls][IISP]美国双ISP-0711",
+            "♻️ 自动选择",
+            "🚀 节点选择",
+            "Ⓜ️ 微软服务"
+          ],
+          "rule": "ProcessName",
+          "rulePayload": "OneDrive.exe",
+          "host": "194892-ipv4mte.gr.global.aa-rt.sharepoint.com",
+          "process": "OneDrive.exe"
+        }
+      ]
+    }
+  ],
+  "note": "Cold cloud-only glTF compared against previous cold adjacent no-texture glTF DIRECT sample; different similar-sized files, not controlled same-file A/B."
+}

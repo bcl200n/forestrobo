@@ -1,0 +1,56 @@
+{
+  "checked_utc": "2026-11-07T16:31:20.007486+00:00",
+  "source_root": "E:\\onedrive\\古城模型哈",
+  "raster_crs": "EPSG:4543",
+  "raster_pixel_m": [
+    0.1,
+    0.1
+  ],
+  "raster_world_file": [
+    0.1,
+    0.0,
+    0.0,
+    -0.1,
+    526096.4578132813,
+    3088037.022833008
+  ],
+  "osgb_crs": "EPSG:4543",
+  "osgb_origin": [
+    526733.0167,
+    3087240.894,
+    1544.5
+  ],
+  "gltf_georeferencing": "not yet verified against OSGB origin",
+  "files": [
+    {
+      "path": "E:\\onedrive\\古城模型哈\\古城模型823\\古城倾斜模型\\DOM\\DOM_DOM.tif",
+      "bytes": 629152338,
+      "attributes": 4194336,
+      "pending_cloud_content": true
+    },
+    {
+      "path": "E:\\onedrive\\古城模型哈\\古城模型823\\古城倾斜模型\\DOM\\DOM_DOM.tif.ovr",
+      "bytes": 95581006,
+      "attributes": 4194336,
+      "pending_cloud_content": true
+    },
+    {
+      "path": "E:\\onedrive\\古城模型哈\\gltf_work\\merged.glb",
+      "bytes": 2755576268,
+      "attributes": 4194336,
+      "pending_cloud_content": true
+    },
+    {
+      "path": "E:\\onedrive\\古城模型哈\\gltf_work\\merged_low_tc.gltf",
+      "bytes": 8369907,
+      "attributes": 4194336,
+      "pending_cloud_content": true
+    },
+    {
+      "path": "E:\\onedrive\\古城模型哈\\gltf_work\\merged_low_tc.bin",
+      "bytes": 871489356,
+      "attributes": 4194336,
+      "pending_cloud_content": true
+    }
+  ]
+}

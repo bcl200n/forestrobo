@@ -1,0 +1,69 @@
+{
+  "RemoteHost": "100.109.188.62",
+  "RemoteUser": "chunlin",
+  "Status": "copying",
+  "Files": [
+    {
+      "Source": "E:\\大论文\\大论文写作\\建昌古城cad数据\\建昌古城cad测绘数据.dwg",
+      "Group": "cad",
+      "Name": "建昌古城cad测绘数据.dwg",
+      "Bytes": 29267583,
+      "ModifiedUtc": "2026-03-04T09:01:03Z",
+      "Sha256": "6443B077E9EBF39ECE4E3F50AB4102E821507631137F8D643567FB09FD4B08AE"
+    },
+    {
+      "Source": "E:\\大论文\\大论文写作\\建昌古城cad数据\\建昌古城cad测绘数据1.dwg",
+      "Group": "cad",
+      "Name": "建昌古城cad测绘数据1.dwg",
+      "Bytes": 29315173,
+      "ModifiedUtc": "2026-03-04T09:14:53Z",
+      "Sha256": "AACCCCCD3DBFBA72340B1E0E616167245F0D21A59DF0B69C793A5F8530E23AFF"
+    },
+    {
+      "Source": "E:\\大论文\\大论文写作\\建昌古城cad数据\\建昌古城cad测绘数据2.dwg",
+      "Group": "cad",
+      "Name": "建昌古城cad测绘数据2.dwg",
+      "Bytes": 27146612,
+      "ModifiedUtc": "2026-03-04T10:45:30Z",
+      "Sha256": "DCBBB446EDA60E09276C8224A80A9B7FFC79FD2B229B63D719DA8D57F6B7F33B"
+    },
+    {
+      "Source": "E:\\大论文\\大论文写作\\建昌古城cad数据\\建昌古城cad测绘数据3.dwg",
+      "Group": "cad",
+      "Name": "建昌古城cad测绘数据3.dwg",
+      "Bytes": 27278469,
+      "ModifiedUtc": "2026-03-04T13:31:12Z",
+      "Sha256": "616EAF1E3344C13BF1FA4309109B2CDB448BE8E554ED692541C1961FE9369DBA"
+    },
+    {
+      "Source": "E:\\大论文\\大论文写作\\建昌古城cad数据\\建昌古城cad测绘数据3_2010dwg.dwg",
+      "Group": "cad",
+      "Name": "建昌古城cad测绘数据3_2010dwg.dwg",
+      "Bytes": 24315679,
+      "ModifiedUtc": "2026-03-04T16:37:40Z",
+      "Sha256": "961014ED446AA5C64C8AA1BE0B20529B3C98F0FEB67C192BF69F19C0D90A673E"
+    },
+    {
+      "Source": "E:\\大论文\\大论文写作\\西昌建昌古城平面图\\建昌古城cad测绘数据3_2010dwg.dwg",
+      "Group": "plan",
+      "Name": "建昌古城cad测绘数据3_2010dwg.dwg",
+      "Bytes": 24309284,
+      "ModifiedUtc": "2026-03-04T17:18:30Z",
+      "Sha256": "ED75C3B24EB494419864213C716F49989B98CCE5D931E76BA2F4B86BCF7CFA4E"
+    },
+    {
+      "Source": "E:\\大论文\\大论文写作\\西昌建昌古城平面图\\5567cc016f7b9cda50c8b9bf00d5418a.png",
+      "Group": "plan",
+      "Name": "5567cc016f7b9cda50c8b9bf00d5418a.png",
+      "Bytes": 46903079,
+      "ModifiedUtc": "2025-12-15T07:12:25.4696581Z",
+      "Sha256": "45FDDD5FCE92C64CB376553263E8820B9ECA9E55732A86ACDCE22CACD8E69995"
+    }
+  ],
+  "NearbyDataDirectories": [
+    "E:\\大论文\\大论文写作\\建昌古城cad数据",
+    "E:\\大论文\\大论文写作\\建昌古城平面图",
+    "E:\\大论文\\大论文写作\\数字古城建设的有关资料和进展",
+    "E:\\大论文\\大论文写作\\西昌建昌古城平面图"
+  ]
+}

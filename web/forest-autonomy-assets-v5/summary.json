@@ -1,0 +1,42 @@
+{
+  "status": "complete",
+  "episodes": [
+    {
+      "scenario": "corridor",
+      "seed": 100,
+      "success": true,
+      "fallen": false,
+      "collision": false,
+      "blocked": false,
+      "timeout": false,
+      "distance_m": 0.3491100959371719,
+      "replans": 39,
+      "steps": 929,
+      "stale_stop": false,
+      "stop_steps": 0,
+      "energy_j": 1146.4751336336399,
+      "path_m": 5.139580069303695,
+      "no_route": false
+    }
+  ],
+  "successes": 1,
+  "total": 1,
+  "elapsed_s": 10.395131199999014,
+  "limitations": [
+    "not SLAM",
+    "no real hardware",
+    "flat/3 degree clearings only",
+    "not RL policy success",
+    "obstacles avoided, not fallen-log traversal",
+    "static accumulated occupancy does not clear removed obstacles"
+  ],
+  "source_sha256": {
+    "rl\\forest_autonomy.py": "b5a1c5b53fc578aca5fb018b4b9f888bf8de75a1ad8ee7e3f1cd51233b3b02d9",
+    "rl\\cartesian_gait.py": "983e35fec9673afc59c38fd50f5626a292717f6bd5e3d0af851dcd8ab328c9ff",
+    "robotics\\local_navigation.py": "67d519245e08647d3f44e518baf2982ab5de710514e6e9d923a23fe790ca48c2",
+    "robotics\\terrain_planner.py": "2bd237a3cb70464aee355a109e481c35c16e5eaca63e21cf4e3e48dcf1ead69a",
+    "rl\\velocity_env.py": "34598a06fd3c9253eeaef29b7173c4334a930e69cd6ad46cd9b84b8b09e2494a",
+    "rl\\generate_model.py": "255dae9f349abe3d4159e262bcca3650eb872541b7116c63bf0afb2776134d7f",
+    "rl\\terrain.py": "accde1a711fae105f163d7fd1c4305967308ef9b80ae14e6d43430945864a1a6"
+  }
+}

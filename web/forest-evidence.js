@@ -1,0 +1,1 @@
+globalThis.FOREST_EVIDENCE={"successes": 6, "total": 10, "collision_count": 0, "fall_count": 0, "blocked_count": 4, "groups": [{"name": "林间通道", "success": 2, "count": 2}, {"name": "中央障碍绕行", "success": 0, "count": 2}, {"name": "3°坡面", "success": 2, "count": 2}, {"name": "两秒感知中断", "success": 2, "count": 2}, {"name": "途中新增障碍", "success": 0, "count": 2}]};

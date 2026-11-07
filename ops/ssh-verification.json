@@ -1,0 +1,28 @@
+﻿{
+    "binary":  "C:\\WINDOWS\\System32\\OpenSSH\\sshd.exe",
+    "service":  {
+                    "Name":  "sshd",
+                    "State":  "Running",
+                    "StartMode":  "Auto",
+                    "PathName":  "C:\\WINDOWS\\System32\\OpenSSH\\sshd.exe"
+                },
+    "firewall":  {
+                     "enabled":  "True",
+                     "action":  "Allow",
+                     "localAddress":  "100.67.187.19",
+                     "remoteAddress":  "100.64.0.0/255.192.0.0",
+                     "interfaceAlias":  "Tailscale",
+                     "localPort":  "22",
+                     "protocol":  "TCP"
+                 },
+    "hostFingerprint":  "256 SHA256:2Rc5QzwJx7Q5bE5nQ6Yd9I5fvGqnXOhxGjAykSTEado system@DESKTOP-9G4B8KE (ED25519)",
+    "effectiveConfig":  [
+                            "pubkeyauthentication yes",
+                            "passwordauthentication no",
+                            "kbdinteractiveauthentication no",
+                            "authorizedkeysfile .ssh/authorized_keys",
+                            "allowusers user",
+                            "authenticationmethods publickey"
+                        ],
+    "checked":  "2026-11-06T19:09:55.3234487+08:00"
+}

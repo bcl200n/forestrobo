@@ -1,0 +1,6 @@
+prepend:
+  - 'DOMAIN,api.onedrive.com,DIRECT'
+  - 'PROCESS-NAME,OneDrive.exe,DIRECT'
+  - 'DOMAIN-SUFFIX,sharepoint.com,DIRECT'
+append: []
+delete: []

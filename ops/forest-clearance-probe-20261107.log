@@ -1,0 +1,13 @@
+{'scenario': 'dynamic', 'seed': 10120, 'mode': 'clearance_observed', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.599682397101403, 'replans': 35, 'steps': 826, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 711.9914232589615, 'path_m': 3.167192128286462, 'no_route': True}
+{'scenario': 'dynamic', 'seed': 10122, 'mode': 'clearance_observed', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.627694586514576, 'replans': 35, 'steps': 831, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 781.131860165686, 'path_m': 3.382803800280919, 'no_route': True}
+{'scenario': 'detour', 'seed': 10120, 'mode': 'clearance_observed', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.4695502227329014, 'replans': 39, 'steps': 947, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 760.4432691256662, 'path_m': 3.2235292988062625, 'no_route': True}
+{'scenario': 'detour', 'seed': 10122, 'mode': 'clearance_observed', 'reference_clearance_m': None, 'success': False, 'fallen': False, 'collision': False, 'blocked': True, 'timeout': False, 'distance_m': 3.853750062980186, 'replans': 42, 'steps': 1022, 'stale_stop': False, 'stop_steps': 0, 'energy_j': 914.4256321497323, 'path_m': 3.687786835214003, 'no_route': True}
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_2svg9vc_\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_k1wi9npp\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_3krfd7e0\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_i6dwonva\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+{'clearance_observed': {'cases': 4, 'arrivals': 0, 'blocked': 4, 'collisions': 0, 'falls': 0}}

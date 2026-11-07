@@ -1,0 +1,29 @@
+{
+  "checked_at": "2026-11-08T01:09:33.886145",
+  "selected_route": "Microsoft proxy group",
+  "direct_KB_per_sec": 64.86952563333281,
+  "proxy_KB_per_sec": 747.0463227420175,
+  "observed_speed_ratio": 11.516136667386887,
+  "proxy_file_bytes": 8369907,
+  "proxy_elapsed_seconds": 11.203999999997905,
+  "proxy_file_verified": true,
+  "active_rules": [
+    {
+      "type": "Domain",
+      "payload": "api.onedrive.com",
+      "proxy": "Ⓜ️ 微软服务"
+    },
+    {
+      "type": "ProcessName",
+      "payload": "OneDrive.exe",
+      "proxy": "Ⓜ️ 微软服务"
+    },
+    {
+      "type": "DomainSuffix",
+      "payload": "sharepoint.com",
+      "proxy": "Ⓜ️ 微软服务"
+    }
+  ],
+  "persistent_rules_file": "C:\\Users\\user\\AppData\\Roaming\\io.github.clash-verge-rev.clash-verge-rev\\profiles\\rN3AFVFnzjmy.yaml",
+  "measurement_note": "Two uncached similar-sized glTF files from same folder and same observed download host. Direct value is a 20-second active-transfer sample; proxy value includes complete download startup. Not a controlled repeated throughput benchmark or continuous route optimizer."
+}

@@ -1,0 +1,54 @@
+﻿**********************
+Windows PowerShell 脚本开始
+开始时间: 20261106160233
+用户名: DESKTOP-9G4B8KE\user
+RunAs 用户: DESKTOP-9G4B8KE\user
+配置名称: 
+计算机: DESKTOP-9G4B8KE (Microsoft Windows NT 10.0.26300.0)
+主机应用程序: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Bypass -File E:\forestrobo\ops\setup-ssh.ps1
+进程 ID: 41764
+PSVersion: 5.1.26100.9711
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9711
+BuildVersion: 10.0.26100.9711
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+PS>TerminatingError(Set-NetFirewallRule):“无法使用指定的命名参数解析参数集。”
+E:\forestrobo\ops\setup-ssh.ps1 : 无法使用指定的命名参数解析参数集。
+    + CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+    + FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException,setup-ssh.ps1
+E:\forestrobo\ops\setup-ssh.ps1 : 无法使用指定的命名参数解析参数集。
+    + CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+    + FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException,setup-ssh.ps1
+
+**********************
+Windows PowerShell 脚本结束
+结束时间: 20261106165001
+**********************
+**********************
+Windows PowerShell 脚本开始
+开始时间: 20261106190948
+用户名: DESKTOP-9G4B8KE\user
+RunAs 用户: DESKTOP-9G4B8KE\user
+配置名称: 
+计算机: DESKTOP-9G4B8KE (Microsoft Windows NT 10.0.26300.0)
+主机应用程序: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Bypass -File E:\forestrobo\ops\setup-ssh.ps1
+进程 ID: 24076
+PSVersion: 5.1.26100.9711
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9711
+BuildVersion: 10.0.26100.9711
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+
+**********************
+Windows PowerShell 脚本结束
+结束时间: 20261106190955
+**********************

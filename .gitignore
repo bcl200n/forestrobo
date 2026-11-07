@@ -1,0 +1,40 @@
+# Python
+rl/.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+rl/.asset_cache/
+
+# 模型与训练产物（体积大, 用 Git LFS 或按需发布）
+rl/models/**/*.zip
+rl/logs/
+rl/*.log
+rl/*.mp4
+
+# 媒体与生成物
+rl/*.png
+rl/*.bin
+rl/terrain_hf.*
+rl/terrain_rubble_*
+rl/forest_dog*.xml
+rl/rubble_dog.xml
+rl/forest_layout.json
+rl/rubble_layout.json
+rl/forest_swarm.xml
+rl/probe.xml
+rl/diag_*.png
+
+# Blender 生成物
+*.blend
+*.blend1
+
+# 系统文件
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# 文档生成中间物
+design/render/
+design/img/
+*.docx
+*.pdf

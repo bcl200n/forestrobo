@@ -1,0 +1,74 @@
+[
+  {
+    "id": "54fbda2c-7172-4912-b7a6-e76547ef32f1",
+    "download": 15858,
+    "upload": 2842,
+    "chains": [
+      "[Hy2][IISP]美国双ISP-0711-hy2",
+      "♻️ 自动选择",
+      "🚀 节点选择",
+      "Ⓜ️ 微软服务"
+    ],
+    "rule": "DomainSuffix",
+    "rulePayload": "onedrive.com",
+    "host": "api.onedrive.com",
+    "process": ""
+  },
+  {
+    "id": "3caa1a8d-fbb7-4f80-a76b-6daa9f47b52e",
+    "download": 185709922,
+    "upload": 304559,
+    "chains": [
+      "[anytls][IISP]美国双ISP-0711",
+      "♻️ 自动选择",
+      "🚀 节点选择",
+      "Ⓜ️ 微软服务"
+    ],
+    "rule": "DomainSuffix",
+    "rulePayload": "sharepoint.com",
+    "host": "194892-ipv4mte.gr.global.aa-rt.sharepoint.com",
+    "process": ""
+  },
+  {
+    "id": "9778fe5e-bcbc-47b6-b145-7f759d347d58",
+    "download": 9475,
+    "upload": 5335,
+    "chains": [
+      "DIRECT"
+    ],
+    "rule": "ProcessName",
+    "rulePayload": "OneDrive.exe",
+    "host": "self.events.data.microsoft.com",
+    "process": "OneDrive.exe"
+  },
+  {
+    "id": "001635dc-f5f2-4fc7-8855-2f7e578ae195",
+    "download": 13014,
+    "upload": 2287,
+    "chains": [
+      "[Hy2][IISP]美国双ISP-0711-hy2",
+      "♻️ 自动选择",
+      "🚀 节点选择",
+      "Ⓜ️ 微软服务"
+    ],
+    "rule": "DomainSuffix",
+    "rulePayload": "onedrive.com",
+    "host": "api.onedrive.com",
+    "process": ""
+  },
+  {
+    "id": "18f642e0-b353-47a1-a163-2593101447ec",
+    "download": 115157631,
+    "upload": 208106,
+    "chains": [
+      "[Hy2][IISP]美国双ISP-0711-hy2",
+      "♻️ 自动选择",
+      "🚀 节点选择",
+      "Ⓜ️ 微软服务"
+    ],
+    "rule": "DomainSuffix",
+    "rulePayload": "sharepoint.com",
+    "host": "194892-ipv4mte.gr.global.aa-rt.sharepoint.com",
+    "process": ""
+  }
+]

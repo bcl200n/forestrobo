@@ -1,0 +1,56 @@
+[
+  {
+    "time": "2026-11-08T00:39:28.783922",
+    "connections": [
+      {
+        "id": "9778fe5e-bcbc-47b6-b145-7f759d347d58",
+        "start": "2026-11-08T00:37:36.7335244+08:00",
+        "download": 9475,
+        "upload": 5335,
+        "chains": [
+          "DIRECT"
+        ],
+        "rule": "ProcessName",
+        "rulePayload": "OneDrive.exe",
+        "host": "self.events.data.microsoft.com",
+        "process": "OneDrive.exe"
+      }
+    ]
+  },
+  {
+    "time": "2026-11-08T00:39:43.785621",
+    "connections": [
+      {
+        "id": "9778fe5e-bcbc-47b6-b145-7f759d347d58",
+        "start": "2026-11-08T00:37:36.7335244+08:00",
+        "download": 9475,
+        "upload": 5335,
+        "chains": [
+          "DIRECT"
+        ],
+        "rule": "ProcessName",
+        "rulePayload": "OneDrive.exe",
+        "host": "self.events.data.microsoft.com",
+        "process": "OneDrive.exe"
+      }
+    ]
+  },
+  {
+    "time": "2026-11-08T00:39:58.787945",
+    "connections": [
+      {
+        "id": "9778fe5e-bcbc-47b6-b145-7f759d347d58",
+        "start": "2026-11-08T00:37:36.7335244+08:00",
+        "download": 9475,
+        "upload": 5335,
+        "chains": [
+          "DIRECT"
+        ],
+        "rule": "ProcessName",
+        "rulePayload": "OneDrive.exe",
+        "host": "self.events.data.microsoft.com",
+        "process": "OneDrive.exe"
+      }
+    ]
+  }
+]

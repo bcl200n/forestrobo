@@ -1,0 +1,30 @@
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_ydnhnhxt\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+{"scenario": "corridor", "seed": 10110, "success": true, "fallen": false, "collision": false, "blocked": false, "timeout": false, "distance_m": 0.34629418215426916, "replans": 39, "steps": 933, "stale_stop": false, "stop_steps": 0, "energy_j": 1120.6490901424374, "path_m": 5.0048985551287615, "no_route": false}
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_f3mq9rmc\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+{"scenario": "corridor", "seed": 10111, "success": true, "fallen": false, "collision": false, "blocked": false, "timeout": false, "distance_m": 0.3483407166615838, "replans": 39, "steps": 932, "stale_stop": false, "stop_steps": 0, "energy_j": 1118.9407974777832, "path_m": 5.001691540361921, "no_route": false}
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_ggu7vey2\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+{"scenario": "detour", "seed": 10110, "success": false, "fallen": false, "collision": false, "blocked": true, "timeout": false, "distance_m": 3.0131988126529596, "replans": 39, "steps": 948, "stale_stop": false, "stop_steps": 0, "energy_j": 1174.842742213433, "path_m": 3.981346435491079, "no_route": true}
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_qoapm6cx\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+{"scenario": "detour", "seed": 10111, "success": false, "fallen": false, "collision": false, "blocked": true, "timeout": false, "distance_m": 3.0337460377883896, "replans": 52, "steps": 1258, "stale_stop": false, "stop_steps": 0, "energy_j": 1923.3967242566873, "path_m": 6.620347923424071, "no_route": false}
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_b7ai0rz1\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+{"scenario": "slope", "seed": 10110, "success": true, "fallen": false, "collision": false, "blocked": false, "timeout": false, "distance_m": 0.347188316225356, "replans": 38, "steps": 921, "stale_stop": false, "stop_steps": 0, "energy_j": 1011.6413156743214, "path_m": 5.001613679307836, "no_route": false}
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity__aqacnyd\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+{"scenario": "slope", "seed": 10111, "success": true, "fallen": false, "collision": false, "blocked": false, "timeout": false, "distance_m": 0.34732068045306913, "replans": 38, "steps": 921, "stale_stop": false, "stop_steps": 0, "energy_j": 1010.9733856677454, "path_m": 5.001026702378364, "no_route": false}
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_eljnwx4o\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+{"scenario": "dropout", "seed": 10110, "success": true, "fallen": false, "collision": false, "blocked": false, "timeout": false, "distance_m": 0.345756850646785, "replans": 38, "steps": 1019, "stale_stop": false, "stop_steps": 94, "energy_j": 1178.1522987884443, "path_m": 5.104997084592095, "no_route": false}
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_9zowy6_1\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+{"scenario": "dropout", "seed": 10111, "success": true, "fallen": false, "collision": false, "blocked": false, "timeout": false, "distance_m": 0.34505583436829185, "replans": 38, "steps": 1018, "stale_stop": false, "stop_steps": 94, "energy_j": 1175.7752745380521, "path_m": 5.102290078743997, "no_route": false}
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_dszwsy_i\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+{"scenario": "dynamic", "seed": 10110, "success": false, "fallen": false, "collision": false, "blocked": true, "timeout": false, "distance_m": 3.118229151264281, "replans": 39, "steps": 948, "stale_stop": false, "stop_steps": 0, "energy_j": 1427.3489939397814, "path_m": 4.927538220897658, "no_route": false}
+✅ 模型已生成（足式山地版）: E:\forestrobo\rl\.asset_cache\velocity_kc5d1ywa\forest_dog.xml
+   仿真高程 0 ~ 8.29 m (平移 3.94) | 树 0 | 岩 0 | 倒木 0 | 全局倾角 None°
+{"scenario": "dynamic", "seed": 10111, "success": false, "fallen": false, "collision": false, "blocked": true, "timeout": false, "distance_m": 3.018019911427743, "replans": 53, "steps": 1283, "stale_stop": false, "stop_steps": 0, "energy_j": 1855.9713761466955, "path_m": 6.596165219348896, "no_route": false}

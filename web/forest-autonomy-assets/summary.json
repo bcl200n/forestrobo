@@ -1,0 +1,37 @@
+{
+  "status": "complete",
+  "episodes": [
+    {
+      "scenario": "corridor",
+      "seed": 100,
+      "success": true,
+      "fallen": false,
+      "collision": false,
+      "timeout": false,
+      "distance_m": 0.34949485621298926,
+      "replans": 50,
+      "steps": 1223,
+      "stale_stop": false,
+      "stop_steps": 0,
+      "energy_j": 1453.8054264505633,
+      "path_m": 5.726521040926673,
+      "no_route": false
+    }
+  ],
+  "successes": 1,
+  "total": 1,
+  "elapsed_s": 13.738289900007658,
+  "limitations": [
+    "not SLAM",
+    "no real hardware",
+    "flat/3 degree clearings only",
+    "not RL policy success",
+    "obstacles avoided, not fallen-log traversal",
+    "static accumulated occupancy does not clear removed obstacles"
+  ],
+  "source_sha256": {
+    "rl\\forest_autonomy.py": "8f2ad4f1b3b2f219732721149b5a2414a9a364607fb2eff5b9125bd6107f3cc4",
+    "rl\\cartesian_gait.py": "983e35fec9673afc59c38fd50f5626a292717f6bd5e3d0af851dcd8ab328c9ff",
+    "robotics\\local_navigation.py": "5661f86d6412f08b2b74ef7e774418f3c10e4e8104eb146935917a2f97ab10b5"
+  }
+}
