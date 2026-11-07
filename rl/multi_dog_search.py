@@ -91,7 +91,7 @@ class MultiDogCoordinator:
     """多狗协同控制器"""
 
     def __init__(self, world_size=20, n_obstacles=15, n_targets=4, seed=42,
-                 n_dogs=3):
+                 n_dogs=10):
         self.world_size = world_size
         self.n_dogs = n_dogs
         rng = np.random.default_rng(seed)
@@ -102,23 +102,34 @@ class MultiDogCoordinator:
             x, y = rng.integers(2, world_size - 2, 2)
             for dx in range(int(rng.integers(1, 3))):
                 for dy in range(int(rng.integers(1, 3))):
-                    if 0 <= x + dx < world_size and 0 <= y + dy < world_size:
-                        self.blocked[x + dx][y + dy] = True
+                    if 0 <= x+dx < world_size and 0 <= y+dy < world_size:
+                        self.blocked[x+dx][y+dy] = True
 
         # 目标(幸存者)
-        free_cells = [(x, y) for x in range(2, world_size - 2)
-                      for y in range(2, world_size - 2)
+        free_cells = [(x, y) for x in range(2, world_size-2)
+                      for y in range(2, world_size-2)
                       if not self.blocked[x][y]]
         target_indices = rng.choice(len(free_cells), n_targets, replace=False)
         self.targets = [free_cells[i] for i in target_indices]
         self.found = set()
 
-        # 初始化狗 (分散起点)
-        starts = [(2, 2), (2, world_size - 3), (world_size - 3, 2)]
-        if n_dogs > 3:
-            starts.append((world_size - 3, world_size - 3))
-        self.dogs = [DogAgent(i, starts[i % len(starts)])
-                     for i in range(n_dogs)]
+        # 初始化狗 (分散起点: 环形均匀分布)
+        radius = min(world_size // 4, 4)
+        cx, cy = world_size // 2, world_size // 2
+        starts = []
+        for i in range(n_dogs):
+            angle = 2 * math.pi * i / n_dogs
+            sx = int(cx + radius * math.cos(angle))
+            sy = int(cy + radius * math.sin(angle))
+            sx = max(1, min(world_size - 2, sx))
+            sy = max(1, min(world_size - 2, sy))
+            # 避开障碍
+            for _ in range(20):
+                if not self.blocked[sx][sy]:
+                    break
+                sx = max(1, min(world_size - 2, sx + 1))
+            starts.append((sx, sy))
+        self.dogs = [DogAgent(i, starts[i]) for i in range(n_dogs)]
 
         # 通信拓扑
         self.comm_links = {}  # (a,b) -> bool
@@ -255,40 +266,49 @@ class MultiDogCoordinator:
 # 测试
 # ============================================================
 if __name__ == '__main__':
-    print('=== 多狗协同搜索测试 ===\n')
+    print('=== 多狗协同搜索测试 (10狗起步) ===\n')
 
-    # 测试1: 正常3狗搜索
-    sim = MultiDogCoordinator(seed=42, n_dogs=3)
-    for _ in range(200):
-        if sim.step():
-            break
-    print(f'3狗正常搜索: {sim.status()}')
+    # 规模扫描: 4/6/8/10/12/16 只狗
+    for n in (4, 6, 8, 10, 12, 16):
+        sim = MultiDogCoordinator(seed=42, n_dogs=n)
+        for _ in range(300):
+            if sim.step():
+                break
+        s = sim.status()
+        print(f'{n:2}狗: 找到{s["found"]} 存活{s["alive"]} '
+              f'覆盖{min(s["coverage"]*100,100):.0f}% '
+              f'步数{sim.step_count}')
 
-    # 测试2: 3狗 + 个体失效
-    sim2 = MultiDogCoordinator(seed=42, n_dogs=3)
-    for i in range(30):
+    # 10狗 + 个体失效 (3只失效)
+    print(f'\n--- 10狗 + 3只失效 ---')
+    sim2 = MultiDogCoordinator(seed=42, n_dogs=10)
+    for i in range(20):
         sim2.step()
-    sim2.handle_failure(1)  # 1号狗失效
-    for _ in range(250):
+    sim2.handle_failure(2)
+    sim2.handle_failure(5)
+    sim2.handle_failure(8)
+    for _ in range(300):
         if sim2.step():
             break
-    print(f'3狗+失效: {sim2.status()}')
+    print(f'10狗失效3只后: {sim2.status()}')
 
-    # 测试3: 3狗 + 通信中断
-    sim3 = MultiDogCoordinator(seed=42, n_dogs=3)
+    # 10狗 + 通信中断
+    print(f'\n--- 10狗 + 通信中断(50步) ---')
+    sim3 = MultiDogCoordinator(seed=42, n_dogs=10)
     for i in range(20):
         sim3.step()
-    sim3.simulate_comm_outage(30)  # 30步中断
-    for _ in range(250):
+    sim3.simulate_comm_outage(50)
+    for _ in range(300):
         if sim3.step():
             break
-    print(f'3狗+中断: {sim3.status()}')
+    print(f'10狗+中断后: {sim3.status()}')
 
-    # 测试4: 4狗
-    sim4 = MultiDogCoordinator(seed=42, n_dogs=4)
-    for _ in range(200):
+    # 16狗大规模
+    print(f'\n--- 16狗大规模 ---')
+    sim4 = MultiDogCoordinator(seed=42, n_dogs=16)
+    for _ in range(300):
         if sim4.step():
             break
-    print(f'4狗搜索:   {sim4.status()}')
+    print(f'16狗: {sim4.status()}')
 
     print('\nMULTI_DOG_DONE')
