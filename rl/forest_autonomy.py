@@ -101,6 +101,29 @@ class ForestAutonomy:
             self.path=self.plan_route();self.replans+=1
             if self.progress_along_route:
                 self.update_route_progress(e.data.qpos[:2],t)
+            # 空路径恢复: 逐步缩小膨胀半径直到找到可行路径
+            if not self.path and not self.blocked:
+                for shrink in (.42,.36,.30):
+                    self.path=self.grid.route(e.data.qpos[:2],self.goal,radius=shrink)
+                    if self.path:
+                        self.replans+=1
+                        break
+                if not self.path:
+                    # 仍然无路: 朝已知自由空间方向后退
+                    free=self.grid.known&~self.grid.occupied
+                    best_back=None;best_clear=0
+                    cell=self.grid.cell(e.data.qpos[:2])
+                    for dr in range(-5,6):
+                        for dc in range(-5,6):
+                            nr,nc=cell[0]+dr,cell[1]+dc
+                            if not(0<=nr<free.shape[0] and 0<=nc<free.shape[1]) or not free[nr,nc]:
+                                continue
+                            clear=math.hypot(dr,dc)
+                            if clear>best_clear:
+                                best_clear=clear;best_back=self.grid.point((nr,nc))
+                    if best_back is not None:
+                        self.path=[best_back.tolist(),
+                                   [e.data.qpos[0],e.data.qpos[1]]]
         if self.progress_along_route and t-self.last_progress_time>10:
             self.blocked=True
         R=e.data.xmat[1].reshape(3,3);yaw=math.atan2(R[1,0],R[0,0])
