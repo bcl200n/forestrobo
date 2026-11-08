@@ -58,28 +58,38 @@ rl/.venv/Scripts/python.exe scripts/planning_examples.py
 | 模块 | 状态 | 说明 |
 |---|---|---|
 | Cartesian 步态 + 解析 IK | ✅ 可用 | 全向速度指令 → 关节伺服，无瞬移 |
-| 速度跟踪残差 (PPO) | ✅ 通过门控 | mean 0.190 < baseline 0.192, 零摔倒 |
+| 速度跟踪残差 (PPO) | 仿真候选 | 第一阶段 PPO 在60个留出工况降低跟踪误差，低摩擦和加重组合下优势未保持 |
 | 合成激光雷达建图 | ✅ 可用 | 3 高度×120 线, LocalGrid 0.2m 格 |
 | 局部路径规划 | ✅ 可用 | A* + 膨胀障碍 + 前沿引导 |
 | 任务级搜救搜索 | ✅ 100% | coverage 控制器 48/48 (detour_holdout) |
 | 传感器故障处理 | ✅ 可用 | dropout 场景下安全停车 |
 
-### 自主基准（corridor / slope / dropout 通过, detour / dynamic 阻塞）
+### 11 月 8 日配对仿真
 
-| 场景 | 结果 | 失败模式 |
-|---|---|---|
-| corridor | 2/2 ✅ | — |
-| slope (3°) | 2/2 ✅ | — |
-| dropout | 2/2 ✅ | 恢复正常 |
-| detour | 0/2 ✗ | 局部路径为空 → 安全停车（诊断见下） |
-| dynamic | 0/2 ✗ | 同上 |
+| 工况 | 规则基线 | 规则加第一阶段 PPO | 规则加最终阶段 PPO |
+|---|---:|---:|---:|
+| 坡面速度跟踪，60 回合平均误差评分 | 0.227 | 0.209 | 0.220 |
+| 坡面低摩擦和 2 kg 等效载荷，60 回合平均误差评分 | 0.254 | 0.257 | 0.251 |
+| 加权路线规划，10 回合到达数 | 10/10 | 9/10 | 未参评 |
 
-### detour 阻塞根因（2026-11-08 诊断）
+坡面为 ±5°、±10° 平面，包含五种固定速度指令和三个评测种子。误差评分为回合内纵向、横向、转向 RMSE 按 `1, 1, 0.4` 加权后的范数，跌倒另加 1。各组无跌倒。第一阶段策略在留出集主要改善转向，零指令下纵向 RMSE 从约 0.017 增至 0.093 m/s。最终阶段多训练了约 300 万步，常规坡面跟踪成绩弱于第一阶段。
 
-`diagnose_forest_detours.py` 三模式对照排除了感知问题：
-- `observed_map` (blocked) vs `truth_map` (blocked) vs `checked_route` (成功)
+路线基准使用新种子 `10240/10241`，覆盖通道、静态绕障、3° 坡面、短时激光中断和途中新增障碍。两组均无碰撞、无跌倒。PPO 组在一个静态绕障回合受阻。旧版不加权路线的受阻情况见 [规划诊断](design/research/siqi-shen/README.md)。仿真中的缩小障碍膨胀半径和后退回退仍需按实测机体净空独立验收。
 
-根因：机器人物理宽度 (0.48m) 接近障碍间距时，膨胀后的局部网格没有可行路径 → `path=[]` → `stopped=True` → 冻结。修复方向：增大障碍间距 / 缩小膨胀半径 / 添加后退恢复策略 / 全局路线缓执行。
+[跟踪评测](rl/models/sim2real_review_20261108/tracking/summary.json) · [规则路线](rl/models/sim2real_review_20261108/route-baseline/summary.json) · [PPO 路线](rl/models/sim2real_review_20261108/route-phase1/summary.json)
+
+### 真机迁移进度
+
+第一阶段 PPO 已导出 NumPy 推理权重。`robotics/tracking_shadow.py` 以 50 Hz 机身速度、单位重力向量、步态相位和参考指令回放，输出供比对的速度残差。与原策略比对 4,346 个观测，归一化动作最大绝对差约 `4.8e-7`。异常时间戳、超时、零速度指令及外部禁用都会抑制残差。此入口仅写日志，当前没有真机运行记录。
+
+```powershell
+$trial = 'rl/models/sim2real_review_20261108/tracking'
+python robotics/tracking_shadow.py "$trial/tracking_actor.npz" "$trial/shadow_frames.jsonl"
+rl/.venv/Scripts/python.exe rl/evaluate_tracking_transfer.py --output rl/models/tracking_transfer_repeat
+rl/.venv/Scripts/python.exe rl/render_tracking_review.py --output rl/models/tracking_video_repeat
+```
+
+实机适配依赖底盘型号、可读步态相位、时钟同步、机身速度估计和独立急停。若底盘仅开放高层速度接口，需用实测回放验证外环残差，现有相位相关权重仅用于影子比对。坡面滑移、载荷变化、静止保持和失联停车须在候选底盘上分开验收。
 
 ### 机械改进（v11-v13, 2026-11-05）
 

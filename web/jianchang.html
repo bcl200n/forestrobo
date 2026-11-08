@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="建昌古城正射影像与已记录机器人搜索轨迹的本地回放。">
+  <title>建昌古城 · 实景轨迹回放 | ForestRobo</title>
+  <link rel="stylesheet" href="jianchang.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="rescue.html"><span class="brand-symbol" aria-hidden="true">F<span>R</span></span><span>FORESTROBO<small>FIELD RESEARCH / 建昌古城</small></span></a>
+    <div class="header-links"><span class="local-pill"><i></i>本地研究数据</span><a href="rescue.html">救援工作站 ↗</a></div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <div><p class="eyebrow">JIANCHANG · OBSERVE THE ROUTE</p><h1>让搜索轨迹落在真实街区上。</h1><p class="intro-copy">叠加正射影像、已采集路网与已记录轨迹，检查机器人走到了哪里。</p></div>
+      <div class="dataset-state"><span id="imageState">正在检查底图</span><small id="imageDetail">读取本地案例文件</small></div>
+    </section>
+
+    <section class="workspace" aria-label="古城轨迹回放">
+      <div class="map-section">
+        <div class="map-toolbar">
+          <div class="scenario-tabs" role="group" aria-label="选择模拟条件">
+            <button type="button" data-scenario="corridor" aria-pressed="true" disabled>常规通行</button>
+            <button type="button" data-scenario="rubble" aria-pressed="false" disabled>模拟瓦砾</button>
+            <button type="button" data-scenario="dropout" aria-pressed="false" disabled>感知与通信中断</button>
+          </div>
+          <span class="record-pill">已记录回合</span>
+        </div>
+        <div class="map-stage" id="mapStage">
+          <canvas id="mapCanvas" tabindex="0" aria-label="古城正射底图与机器人轨迹。可使用右侧缩放按钮和下方时间轴操作。"></canvas>
+          <div class="map-heading"><span class="map-kicker">研究区 / 四川 · 西昌</span><h2>建昌古城</h2><p id="mapSubtitle">道路与底图配准核对</p></div>
+          <div class="map-tools" aria-label="地图视角">
+            <button type="button" id="zoomIn" aria-label="放大地图" title="放大">＋</button>
+            <button type="button" id="zoomOut" aria-label="缩小地图" title="缩小">−</button>
+            <button type="button" id="resetView" aria-label="恢复完整视角" title="恢复视角">⌖</button>
+          </div>
+          <div class="north" aria-label="地图上方为北">N<span>↑</span></div>
+          <div class="map-empty" id="mapEmpty" hidden><strong>案例文件尚未就绪</strong><p>请将导出的数据文件与底图放在本页的 jianchang-assets 目录中。</p></div>
+          <div class="map-bottom"><span id="scaleBar"></span><span class="map-hint">拖动平移 · 滚轮缩放</span></div>
+          <a class="map-attribution" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors · ODbL</a>
+        </div>
+
+        <div class="playback">
+          <div class="playback-main">
+            <button type="button" id="playPause" class="play-button" aria-label="播放轨迹" disabled><span id="playIcon" aria-hidden="true">▶</span><span id="playText">播放轨迹</span></button>
+            <div class="timeline-area"><div class="timeline-heading"><span id="phase">等待回合数据</span><span><b id="currentStep">0</b> / <span id="totalSteps">0</span> 步</span></div><input id="timeline" type="range" min="0" max="1" value="0" step="1" aria-label="回放决策步" disabled></div>
+            <label class="speed">速度<select id="speed" aria-label="回放速度"><option value="8">8 步/秒</option><option value="24" selected>24 步/秒</option><option value="64">64 步/秒</option></select></label>
+          </div>
+          <div class="playback-bottom"><button type="button" id="goStart" disabled>回到起点</button><button type="button" id="goEnd" disabled>查看完整轨迹</button><span>按决策步播放，速度与实机运动时间无对应关系。</span></div>
+        </div>
+      </div>
+
+      <aside class="inspector">
+        <div class="inspector-section">
+          <p class="eyebrow">01 / TASK COMPARISON</p><h2>选择任务对照</h2>
+          <label class="field-label" for="runMode">任务结束条件</label><select id="runMode" disabled></select>
+          <p id="taskDescription" class="support-text">等待数据。</p>
+          <div class="result-state" id="resultState">—</div>
+          <div class="metrics">
+            <div class="metric primary-metric"><span>回合最终探测覆盖</span><strong id="coverage">—</strong><small>已建模且从起点可达的路网</small></div>
+            <div class="metric"><span>回合总步数</span><strong id="stepsMetric">—</strong></div>
+            <div class="metric"><span>记录碰撞数</span><strong id="collisions">—</strong></div>
+          </div>
+          <div class="minor-stats"><span>最终确认线索 <b id="foundMetric">—</b></span><span>模拟行程 <b id="distanceMetric">—</b></span></div>
+        </div>
+
+        <div class="inspector-section layers">
+          <p class="eyebrow">02 / ALIGNMENT CHECK</p><h2>图层与配准核对</h2>
+          <label class="toggle"><span><i class="swatch photo"></i>正射影像</span><input id="layerImage" type="checkbox" checked></label>
+          <label class="opacity-label" for="imageOpacity">影像不透明度 <output id="opacityValue">85%</output></label><input id="imageOpacity" type="range" min="20" max="100" value="85" step="5" aria-label="正射影像不透明度">
+          <label class="toggle"><span><i class="swatch road"></i>OSM 道路</span><input id="layerRoads" type="checkbox" checked></label>
+          <label class="toggle"><span><i class="swatch route"></i>已记录轨迹</span><input id="layerRoute" type="checkbox" checked></label>
+          <label class="toggle"><span><i class="swatch label"></i>道路名称</span><input id="layerLabels" type="checkbox" checked></label>
+          <label class="toggle"><span><i class="swatch extent"></i>旧版裁剪范围</span><input id="layerExtent" type="checkbox"></label>
+          <p class="support-text">可切换道路与影像，观察巷道是否一致。白色背景区没有可核对的地表内容。图层开关仅改变显示。</p>
+        </div>
+
+        <div class="inspector-section legend-section">
+          <p class="eyebrow">03 / READING THE MAP</p><h2>轨迹如何阅读</h2>
+          <ul class="legend"><li><i class="legend-line early"></i>确认全部线索之前</li><li><i class="legend-line late"></i>确认后继续搜索</li><li><i class="legend-dot"></i>当前回放位置</li></ul>
+          <p class="support-text">未采集的内巷仍属于未建模区域。北门、安定门的屋顶遮挡门洞；台阶、净空及实际通行条件仍需 CAD 或现场核验。</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="evidence-strip" aria-label="数据与评测说明">
+      <div><span class="eyebrow">DATA STATUS</span><h3>底图与轨迹，各自可追溯。</h3><p id="sourceSummary">等待导出数据。</p></div>
+      <div><span class="eyebrow">EXPERIMENT SCOPE</span><p id="scopeText">这里回放已有二维搜索评估。正射影像用于空间核对，瓦砾与线索来自模拟条件。</p><p id="limitsText" class="support-text"></p></div>
+    </section>
+    <noscript><p class="noscript">此页面需要启用 JavaScript 才能显示地图和轨迹回放。</p></noscript>
+  </main>
+  <footer><span>FORESTROBO / 建昌古城实景研究</span><span>本地回放 · 数据不经本页上传</span></footer>
+  <script src="jianchang-assets/data.js"></script>
+  <script src="jianchang.js"></script>
+</body>
+</html>

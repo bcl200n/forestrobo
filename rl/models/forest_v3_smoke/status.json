@@ -1,0 +1,69 @@
+{
+  "status": "complete",
+  "protocols": [
+    {
+      "schema": "forest-history-v3.1",
+      "embodiment": "foot",
+      "actual_timesteps": 2048,
+      "requested_timesteps": 2048,
+      "training_seed": 42,
+      "history": 4,
+      "terrain_seeds": [
+        [
+          100,
+          101
+        ],
+        [
+          200,
+          201
+        ]
+      ],
+      "stages": [
+        [
+          "smooth",
+          "nominal"
+        ],
+        [
+          "std",
+          "degraded"
+        ]
+      ],
+      "action_dim": 12,
+      "checkpoint_sha256": "73cea100950eb3a7c987041f87a91a3107678f9f33981a2fcde462e487575f6d",
+      "limitation": "Simulated sensor model and fixed generic robot; not deployable or real-hardware validated."
+    },
+    {
+      "schema": "forest-history-v3.1",
+      "embodiment": "wheel",
+      "actual_timesteps": 2048,
+      "requested_timesteps": 2048,
+      "training_seed": 42,
+      "history": 4,
+      "terrain_seeds": [
+        [
+          100,
+          101
+        ],
+        [
+          200,
+          201
+        ]
+      ],
+      "stages": [
+        [
+          "smooth",
+          "nominal"
+        ],
+        [
+          "std",
+          "degraded"
+        ]
+      ],
+      "action_dim": 16,
+      "checkpoint_sha256": "ce03bba0f9dabb6c2ded3ef568f128af1bc0ee38abce61ba43514031b0fa5252",
+      "limitation": "Simulated sensor model and fixed generic robot; not deployable or real-hardware validated."
+    }
+  ],
+  "elapsed_s": 147.42335729999468,
+  "completed_utc": "2026-11-05T17:24:19.992427+00:00"
+}

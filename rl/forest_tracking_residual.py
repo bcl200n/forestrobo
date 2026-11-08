@@ -1,10 +1,13 @@
 """Train bounded velocity corrections around the Cartesian gait in MuJoCo."""
 import argparse
 import json
+import math
+import sys
 from functools import partial
 from pathlib import Path
 
 import gymnasium as gym
+import mujoco
 import numpy as np
 import torch
 from stable_baselines3 import PPO
@@ -15,24 +18,8 @@ from cartesian_gait import targets
 from train_rescue_search import now, write_json
 from velocity_env import VelocityEnv
 
-
-SCHEMA = 'forest-cartesian-tracking-residual-v1'
-RESIDUAL_SCALE = np.array([.12, .08, .16])
-DRIVE_LO = np.array([-.25, -.22, -.65])
-DRIVE_HI = np.array([.5, .22, .65])
-
-
-def tracking_observation(command, filtered, gravity, integral, phase):
-    return np.r_[command, filtered, gravity, integral,
-                 np.sin(phase), np.cos(phase)].astype(np.float32)
-
-
-def tracking_drive(command, filtered, integral, residual):
-    drive = command + .35 * (command - filtered) + .5 * integral
-    if np.linalg.norm(command) > .03:
-        drive[0] += .12
-    return np.clip(drive + np.clip(residual, -1, 1) * RESIDUAL_SCALE,
-                   DRIVE_LO, DRIVE_HI)
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from robotics.tracking_shadow import SCHEMA, tracking_drive, tracking_feedback, tracking_observation
 
 
 class ForestTrackingEnv(gym.Env):
@@ -69,8 +56,7 @@ class ForestTrackingEnv(gym.Env):
         measured = np.r_[linear[:2], angular[2]]
         if self.level == 'mixed':
             measured += self.np_random.normal(0., .025, size=3)
-        self.filtered = .96 * self.filtered + .04 * measured
-        self.integral = np.clip(self.integral + .02 * (self.reference - self.filtered), -.15, .15)
+        self.filtered, self.integral = tracking_feedback(self.reference, self.filtered, self.integral, measured)
         drive = tracking_drive(self.reference, self.filtered, self.integral, action)
         joints = targets(physics.data.time, drive)
         _, _, fallen, timeout, info = physics.step(np.clip((joints - physics.q0) / .4, -1, 1))
@@ -86,14 +72,27 @@ class ForestTrackingEnv(gym.Env):
         self.physics.close()
 
 
-def evaluate(model):
-    cases = ((.25, 0., 0.), (.20, .10, .20), (.20, -.10, -.20), (-.10, 0., .18), (0., 0., 0.))
+TRACKING_CASES = ((.25, 0., 0.), (.20, .10, .20), (.20, -.10, -.20), (-.10, 0., .18), (0., 0., 0.))
+
+
+def evaluate(model, *, slopes=(-5., 0., 5.), seeds=(37001, 37002), cases=TRACKING_CASES,
+             floor_friction=1., payload_kg=0.):
     rows = []
-    for slope in (-5., 0., 5.):
+    for slope in slopes:
         env = ForestTrackingEnv(slope, 'mixed')
         try:
+            physics = env.physics
+            if floor_friction != 1.:
+                floor = physics.model.geom('calibration_floor')
+                floor.friction[0] = floor_friction
+                # Use the floor coefficient even when the contacting foot has higher friction.
+                floor.priority[0] = 1
+            if payload_kg:
+                # An idealized point payload at the trunk's existing center of mass.
+                physics.model.body_mass[1] += payload_kg
+                mujoco.mj_setConst(physics.model, physics.data)
             for command in cases:
-                for seed in (37001, 37002):
+                for seed in seeds:
                     obs, _ = env.reset(seed=seed, options={'command': command})
                     errors = []
                     energy = 0.
@@ -114,8 +113,9 @@ def evaluate(model):
         finally:
             env.close()
     scores = np.array([row['score'] for row in rows])
+    tail = math.ceil(len(scores) * .2)
     return dict(episodes=rows, mean_score=float(scores.mean()),
-                worst_20pct_score=float(np.sort(scores)[-6:].mean()),
+                worst_20pct_score=float(np.sort(scores)[-tail:].mean()),
                 falls=sum(row['fallen'] for row in rows))
 
 

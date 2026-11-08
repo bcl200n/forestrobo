@@ -1,0 +1,68 @@
+{
+  "arm_no_load": {
+    "tcp_m": [
+      0.87,
+      0.0,
+      0.0
+    ],
+    "torque_nm": [
+      0.0,
+      33.250995,
+      13.165020000000002,
+      1.000620000000001,
+      0.0
+    ],
+    "utilization": [
+      0.0,
+      0.47501421428571433,
+      0.29255600000000004,
+      0.055590000000000056,
+      0.0
+    ],
+    "within_rated": true,
+    "theoretical_max_height_m": 1.52,
+    "limitation": "Static torque only; no joint limits, collision, gearbox life, contact stability or certification."
+  },
+  "arm_500n_vertical_reaction": {
+    "tcp_m": [
+      0.87,
+      0.0,
+      0.0
+    ],
+    "torque_nm": [
+      0.0,
+      -382.11919500000005,
+      -235.10222,
+      -56.29182,
+      0.0
+    ],
+    "utilization": [
+      0.0,
+      5.458845642857144,
+      5.224493777777777,
+      3.1273233333333335,
+      0.0
+    ],
+    "within_rated": false,
+    "theoretical_max_height_m": 1.52,
+    "limitation": "Static torque only; no joint limits, collision, gearbox life, contact stability or certification."
+  },
+  "unanchored_30kg_base_500n": {
+    "feasible": false,
+    "reason": "ground_unloaded",
+    "normal_n": -205.7
+  },
+  "navigation_onboard_without_link": {
+    "linear_m_s": 0.4,
+    "yaw_rad_s": 0,
+    "tool_enabled": false,
+    "reason": "onboard_autonomy"
+  },
+  "navigation_stale_sensor": {
+    "linear_m_s": 0,
+    "yaw_rad_s": 0,
+    "tool_enabled": false,
+    "reason": "stale_or_unsafe_sensing"
+  },
+  "limitation": "Illustrative configurations, not measured hardware performance or deployable control."
+}

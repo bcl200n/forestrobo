@@ -1,0 +1,57 @@
+{
+  "status": "complete",
+  "schema": "rescue-scan-wait-v1",
+  "updated_at": "2026-11-07T08:04:26.210997+00:00",
+  "results": {
+    "alias_scan": {
+      "actual_steps": 196608,
+      "successes": 22,
+      "cases": 24,
+      "mean_completion_cost": 117.08333333333333,
+      "worst_20pct_cost": 229.2,
+      "collision_episodes": 0,
+      "unsafe_motion": 0,
+      "shield_overrides": 1194,
+      "mean_found": 2.875,
+      "mean_scans": 12.541666666666666,
+      "mean_passive_waits": 0.0,
+      "mean_empty_stationary_steps": 9.333333333333334,
+      "mean_outage_steps": 11.833333333333334,
+      "mean_longest_empty_stationary_streak": 8.791666666666666,
+      "mean_sighted_passive_waits": 0.0
+    },
+    "split_wait": {
+      "actual_steps": 196608,
+      "successes": 23,
+      "cases": 24,
+      "mean_completion_cost": 88.45833333333333,
+      "worst_20pct_cost": 165.4,
+      "collision_episodes": 0,
+      "unsafe_motion": 0,
+      "shield_overrides": 506,
+      "mean_found": 2.9583333333333335,
+      "mean_scans": 3.875,
+      "mean_passive_waits": 0.0,
+      "mean_empty_stationary_steps": 0.7083333333333334,
+      "mean_outage_steps": 10.5,
+      "mean_longest_empty_stationary_streak": 0.3333333333333333,
+      "mean_sighted_passive_waits": 0.0
+    },
+    "frontier": {
+      "successes": 24,
+      "cases": 24,
+      "mean_completion_cost": 76.08333333333333,
+      "worst_20pct_cost": 128.8,
+      "collision_episodes": 0,
+      "unsafe_motion": 0,
+      "shield_overrides": 0,
+      "mean_found": 3.0,
+      "mean_scans": 4.25,
+      "mean_passive_waits": 0.0,
+      "mean_empty_stationary_steps": 0.7916666666666666,
+      "mean_outage_steps": 10.833333333333334,
+      "mean_longest_empty_stationary_streak": 0.3333333333333333,
+      "mean_sighted_passive_waits": 0.0
+    }
+  }
+}

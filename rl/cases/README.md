@@ -1,5 +1,18 @@
 # 西昌建昌古城救援搜索案例
 
+## 正射影像上的轨迹回放
+
+双击打开 [建昌古城轨迹回放](../../web/jianchang.html)，可切换三种场景和两种搜索策略，拖动进度条查看原始决策步。底图来自用户提供的正射影像。导出程序用 EPSG:4543 和世界文件将 OSM 要素、仿真格心和航拍裁片对齐。
+
+在仓库根目录重新导出。默认从 `data/jianchang/orthophoto/DOM_DOM.tif` 读取影像，从 `data/jianchang/local_metadata/` 读取坐标文件。
+
+```powershell
+& .\rl\.venv\Scripts\python.exe -m pip install pyproj rasterio
+& .\rl\.venv\Scripts\python.exe -X utf8 .\scripts\export_jianchang_orthophoto.py
+```
+
+使用 `--map-only` 可以仅生成路网和回放数据。8 米栅格的轨迹用于街区级评估。现场通行复核需要门洞、台阶和净空数据。
+
 ## 内部街巷修正
 
 上一版 512 × 512 米裁剪区集中在古城东南侧，遗漏了原始 OSM 数据中的什字街、北街、部分后营巷等内部道路。程序当时以找到三条合成线索为结束条件，图中的轨迹因此只表示该项任务完成前的行程。

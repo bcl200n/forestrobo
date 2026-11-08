@@ -1,0 +1,38 @@
+[
+  {
+    "file": "01-PlanU.pdf",
+    "pages": 38,
+    "sha256": "c6746d349cf9a69caf7d141fb0dd3a73c5cdadcf0931c9634cfc41d1cba6a520",
+    "first": "PlanU: Large Language Model Reasoning through Planning under Uncertainty Ziwei Dengab\u2217, Mian Dengab\u2217, Chenjing Liangab, Zeming Gaoab, Chennan Maab, Chenxing Linab, Haipeng Zhangab, Songzhu Meic, Cheng Wangab, Siqi Shenab\u2020 aFujian Key Laboratory of Se"
+  },
+  {
+    "file": "02-FlowMAS.pdf",
+    "pages": 32,
+    "sha256": "b191e91de2913904771f8f8cbee48e8460fb14c4c6bf9b6e43d87930c395aac3",
+    "first": "FlowMAS: Learning Multi-Agent Workflow Topology via Information-guided Generative Flow Network Haitao Wangab\u2217, Chenjing Liangab\u2217, Haipeng Zhangab, Jiawei Huab, Sicheng Wangab, Songzhu Meic, Chenglu Wenab, Siqi Shenab\u2020, Cheng Wangab aFujian Key Labora"
+  },
+  {
+    "file": "03-onPanda.pdf",
+    "pages": 12,
+    "sha256": "7b9ebad648805d0ace85288fc77405e884dcd2c7a42c3d773bdf30980d07ff9b",
+    "first": "onPanda: Efficient Annotation of On-Policy Alignment Data for LLMs and Agents via Token-Level Correction Lei Yang1,Mengyin Liu 1,2,Jia Wang 1,Hangyu Guo 1, Liang Zhao1,Zheng Ge 1,Kang An 1,Binxing Jiao 1, Qi Han1,Daxin Jiang 1,Siqi Shen 2,Xiangyu Zha"
+  },
+  {
+    "file": "04-Lightweight-SFT.pdf",
+    "pages": 19,
+    "sha256": "6ec73938b3aab8850043d98a186d9b7f1cf83ec94f065ce3188eb02619a0cc4d",
+    "first": "Published as a conference paper at ICLR 2026 GETTINGYOURLLMSREADY FORREINFORCEMENT LEARNING WITHLIGHTWEIGHTSFT Xinran Li1,2 Guangda Huzhang\u2217 Siqi Shen3 Qing-Guo Chen2 Zhao Xu2 Weihua Luo2 Kaifu Zhang2 Jun Zhang1,* 1The Hong Kong University of Science"
+  },
+  {
+    "file": "05-MAGE.pdf",
+    "pages": 28,
+    "sha256": "b839e8706c719a678d69f0471f99df455d6b11715fc2928b83da8a48151d8e2c",
+    "first": "Published as a conference paper at ICLR 2026 MAGE: M ULTI-SCALE AUTOREGRESSIVE GENERATION FOR OFFLINE REINFORCEMENT LEARNING Chenxing Linab\u2217, Xinhui Gaoab\u2217, Haipen Zhangab, Xinran Lic, Haitao Wangab, Songzhu Meid, Chenglu Wenab, Weiquan Liuabe, Siqi "
+  },
+  {
+    "file": "reference-Miki-2022.pdf",
+    "pages": 22,
+    "sha256": "7e1c08c712ba96c2ada559285191a37fb37b9e3faf297670315a13d80ac75f55",
+    "first": "Research Article ETH Zurich and Intel 1 Learning robust perceptive locomotion for quadrupedal robots in the wild TAKAHIRO MIKI 1,*, J OONHO LEE1, J EMIN HWANGBO 2, L ORENZ WELLHAUSEN 1, V LADLEN KOLTUN 3, AND MARCO HUTTER 1 1Robotic Systems Lab, ETH "
+  }
+]

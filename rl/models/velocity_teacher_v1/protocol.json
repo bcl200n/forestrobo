@@ -1,0 +1,23 @@
+{
+  "schema": "foot-velocity-phase-teacher-v1",
+  "seed": 2026,
+  "actual_steps": 65536,
+  "training_slopes": [
+    0
+  ],
+  "evaluation_slopes": [
+    -5,
+    0,
+    5
+  ],
+  "evaluation_seeds": [
+    10001,
+    10002
+  ],
+  "files_sha256": {
+    "velocity_env.py": "5df5799341ce84db3c0c8a7b0b3496b2b4d72a8be5ef6a12e71e4357c96509b3",
+    "velocity_primitive.py": "674924ebd9d027d6a5caa0e2410492d4113e2f9c23f30093cdea1f8eb994a401",
+    "foot_teacher_env.py": "969a93144d818156c3f32999eb3198f3adeb11dbea0cfaefaea208316466d7ae",
+    "train_velocity_teacher.py": "2bd719f0e74043c2a875faa408645ab511481244338c031e2cce49060f0e73cd"
+  }
+}

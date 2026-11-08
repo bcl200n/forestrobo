@@ -3,9 +3,15 @@
   "features": [
     {
       "type": "Feature",
+      "id": "林下经济范围(1)-1",
       "properties": {
         "name": "石斛",
         "category": "林下经济范围(1)",
+        "functionZone": "石斛",
+        "reportedArea": "375.1",
+        "source": "林下经济范围(1).kmz",
+        "sourceKml": "doc.kml",
+        "altitudeMode": "clampToGround",
         "points": 125
       },
       "geometry": {
@@ -518,9 +524,15 @@
     },
     {
       "type": "Feature",
+      "id": "林下经济范围(1)-2",
       "properties": {
         "name": "黄莲",
         "category": "林下经济范围(1)",
+        "functionZone": "黄莲",
+        "reportedArea": "1168.4",
+        "source": "林下经济范围(1).kmz",
+        "sourceKml": "doc.kml",
+        "altitudeMode": "clampToGround",
         "points": 649
       },
       "geometry": {
@@ -3129,9 +3141,15 @@
     },
     {
       "type": "Feature",
+      "id": "林下经济范围(1)-3",
       "properties": {
         "name": "待定",
         "category": "林下经济范围(1)",
+        "functionZone": "待定",
+        "reportedArea": "51.5",
+        "source": "林下经济范围(1).kmz",
+        "sourceKml": "doc.kml",
+        "altitudeMode": "clampToGround",
         "points": 30
       },
       "geometry": {
@@ -3264,9 +3282,15 @@
     },
     {
       "type": "Feature",
+      "id": "林下经济范围(1)-4",
       "properties": {
         "name": "待定",
         "category": "林下经济范围(1)",
+        "functionZone": "待定",
+        "reportedArea": "604.9",
+        "source": "林下经济范围(1).kmz",
+        "sourceKml": "doc.kml",
+        "altitudeMode": "clampToGround",
         "points": 620
       },
       "geometry": {
@@ -5759,9 +5783,15 @@
     },
     {
       "type": "Feature",
+      "id": "直服用地范围(1)-1",
       "properties": {
-        "name": "直服用地范围(1)",
+        "name": "加工厂",
         "category": "直服用地范围(1)",
+        "functionZone": "加工厂",
+        "reportedArea": "42.4",
+        "source": "直服用地范围(1).kmz",
+        "sourceKml": "doc.kml",
+        "altitudeMode": "clampToGround",
         "points": 40
       },
       "geometry": {
@@ -5934,9 +5964,15 @@
     },
     {
       "type": "Feature",
+      "id": "直服用地范围(1)-2",
       "properties": {
-        "name": "直服用地范围(1)",
+        "name": "加工厂",
         "category": "直服用地范围(1)",
+        "functionZone": "加工厂",
+        "reportedArea": "53.7",
+        "source": "直服用地范围(1).kmz",
+        "sourceKml": "doc.kml",
+        "altitudeMode": "clampToGround",
         "points": 68
       },
       "geometry": {
@@ -6221,9 +6257,15 @@
     },
     {
       "type": "Feature",
+      "id": "直服用地范围(1)-3",
       "properties": {
-        "name": "直服用地范围(1)",
+        "name": "苗圃地",
         "category": "直服用地范围(1)",
+        "functionZone": "苗圃地",
+        "reportedArea": "160",
+        "source": "直服用地范围(1).kmz",
+        "sourceKml": "doc.kml",
+        "altitudeMode": "clampToGround",
         "points": 55
       },
       "geometry": {
@@ -6453,6 +6495,18 @@
           ]
         ]
       }
+    }
+  ],
+  "sources": [
+    {
+      "name": "林下经济范围(1).kmz",
+      "sha256": "997da12c0cdf25faa5e783672596be7a7fde85c2cfc9dffe538fc6888a57ed3a",
+      "parcels": 4
+    },
+    {
+      "name": "直服用地范围(1).kmz",
+      "sha256": "967ee1d50531f0838482ff5d1b21ea22a67dd621484d3fc4e392987f21c8c02d",
+      "parcels": 3
     }
   ]
 }

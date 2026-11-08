@@ -1,0 +1,18 @@
+[
+  {
+    "mode": "forward",
+    "steps": 150,
+    "forward_speed": 0.1135928719721657,
+    "displacement": 0.40313020413166073,
+    "yaw_change": -0.26570034628298156,
+    "failure": ""
+  },
+  {
+    "mode": "yaw",
+    "steps": 150,
+    "forward_speed": 0.04091351045489622,
+    "displacement": 0.27458673674162315,
+    "yaw_change": -0.08159986118437068,
+    "failure": ""
+  }
+]

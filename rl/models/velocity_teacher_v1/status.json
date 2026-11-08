@@ -1,0 +1,10 @@
+{
+  "status": "complete",
+  "actual_steps": 65536,
+  "baseline_pass_count": 12,
+  "learned_pass_count": 6,
+  "cases": 30,
+  "promoted": false,
+  "next_action": "student_distillation_not_started",
+  "elapsed_s": 27.72494000000006
+}

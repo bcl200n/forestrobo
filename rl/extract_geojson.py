@@ -1,124 +1,104 @@
-# -*- coding: utf-8 -*-
-"""从 KMZ 提取所有地块的经纬度坐标 → 生成 WebGIS GeoJSON"""
+"""Extract the complete forest parcel geometries and provenance from local KMZ files."""
+
+import argparse
+import hashlib
+from html import unescape
 import json
-import os
-import sys
-import zipfile
+from pathlib import Path
+import re
 import xml.etree.ElementTree as ET
+import zipfile
 
 
-def parse_all_kmz(directory):
-    """解析目录下所有 KMZ, 提取每个 Placemark 的坐标"""
-    all_features = []
+ROOT = Path(__file__).resolve().parents[1]
+SOURCE_DIR = ROOT / '林场范围哈'
+WEB_DATA = ROOT / 'rl' / 'forest_features.js'
 
-    for fn in sorted(os.listdir(directory)):
-        if not fn.endswith('.kmz'):
-            continue
-        path = os.path.join(directory, fn)
-        category = fn.replace('.kmz', '')
 
-        with zipfile.ZipFile(path, 'r') as z:
-            kmls = [n for n in z.namelist() if n.lower().endswith('.kml')]
-            if not kmls:
-                continue
-            content = z.read(kmls[0])
+def tag(element):
+    return element.tag.rsplit('}', 1)[-1]
 
-        root = ET.fromstring(content)
 
-        for pm in root.iter():
-            if not pm.tag.endswith('Placemark'):
-                continue
+def child_text(element, name):
+    return next(((child.text or '').strip() for child in element if tag(child) == name), '')
 
-            # 获取名称
-            name = category
-            for el in pm.iter():
-                if el.tag.endswith('name') and el.text and el.text.strip():
-                    name = el.text.strip()
-                    break
 
-            # 获取坐标
-            coords = []
-            geom_type = None
+def table_value(description, label):
+    cell = r'<td(?:\s[^>]*)?>'
+    match = re.search(cell + r'\s*' + re.escape(label) + r'\s*</td>\s*'
+                      + cell + r'([^<]*)</td>', description, re.IGNORECASE)
+    return unescape(match.group(1)).strip() if match else ''
 
-            for el in pm.iter():
-                if el.tag.endswith('coordinates') and el.text:
-                    for line in el.text.strip().split():
-                        parts = line.strip().split(',')
-                        if len(parts) >= 2:
-                            try:
-                                lon, lat = float(parts[0]), float(parts[1])
-                                coords.append([lon, lat])
-                            except ValueError:
-                                pass
-                    break
 
-            # 判断几何类型
-            for el in pm.iter():
-                if el.tag.endswith('Polygon'):
-                    geom_type = 'Polygon'
-                    break
-                elif el.tag.endswith('LineString'):
-                    geom_type = 'LineString'
-                    break
-                elif el.tag.endswith('Point'):
-                    geom_type = 'Point'
-                    break
+def ring_from_boundary(boundary):
+    coordinates = next((el.text for el in boundary.iter() if tag(el) == 'coordinates'), None)
+    ring = [list(map(float, vertex.split(',')[:2])) for vertex in (coordinates or '').split()]
+    if len(ring) < 3 or any(len(vertex) != 2 for vertex in ring):
+        raise ValueError('A KML polygon ring requires at least three longitude/latitude pairs')
+    if ring[0] != ring[-1]:
+        ring.append(ring[0])
+    return ring
 
-            if coords and len(coords) >= 3 and geom_type == 'Polygon':
-                all_features.append({
-                    'type': 'Feature',
-                    'properties': {
-                        'name': name,
-                        'category': category,
-                        'points': len(coords),
-                    },
-                    'geometry': {
-                        'type': 'Polygon',
-                        'coordinates': [coords],
-                    },
-                })
-            elif coords and len(coords) >= 2 and geom_type == 'LineString':
-                all_features.append({
-                    'type': 'Feature',
-                    'properties': {
-                        'name': name,
-                        'category': category,
-                        'points': len(coords),
-                    },
-                    'geometry': {
-                        'type': 'LineString',
-                        'coordinates': coords,
-                    },
-                })
 
-    return all_features
+def extract(directory):
+    features = []
+    sources = []
+    for path in sorted(directory.glob('*.kmz')):
+        with zipfile.ZipFile(path) as archive:
+            members = [name for name in archive.namelist() if name.lower().endswith('.kml')]
+            if not members:
+                raise ValueError(f'{path.name} does not contain KML')
+            source_start = len(features)
+            for member in members:
+                document = ET.fromstring(archive.read(member))
+                for placemark in (el for el in document.iter() if tag(el) == 'Placemark'):
+                    description = child_text(placemark, 'description')
+                    zone = table_value(description, '功能分区')
+                    source_area = table_value(description, '面积')
+                    name = child_text(placemark, 'name') or zone or path.stem
+                    for polygon in (el for el in placemark.iter() if tag(el) == 'Polygon'):
+                        outer = next(el for el in polygon if tag(el) == 'outerBoundaryIs')
+                        holes = [el for el in polygon if tag(el) == 'innerBoundaryIs']
+                        rings = [ring_from_boundary(boundary) for boundary in (outer, *holes)]
+                        features.append({
+                            'type': 'Feature',
+                            'id': f'{path.stem}-{len(features) - source_start + 1}',
+                            'properties': {
+                                'name': name,
+                                'category': path.stem,
+                                'functionZone': zone or None,
+                                'reportedArea': source_area or None,
+                                'source': path.name,
+                                'sourceKml': member,
+                                'altitudeMode': child_text(polygon, 'altitudeMode') or 'clampToGround',
+                                'points': sum(map(len, rings)),
+                            },
+                            'geometry': {'type': 'Polygon', 'coordinates': rings},
+                        })
+        sources.append({
+            'name': path.name,
+            'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+            'parcels': len(features) - source_start,
+        })
+    if not features:
+        raise ValueError(f'No KMZ parcel polygons found in {directory}')
+    return {'type': 'FeatureCollection', 'features': features, 'sources': sources}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--source', type=Path, default=SOURCE_DIR)
+    parser.add_argument('--web-output', type=Path, default=WEB_DATA)
+    args = parser.parse_args()
+    data = extract(args.source)
+    geojson = args.source / 'forest_features.geojson'
+    geojson.write_text(json.dumps(data, ensure_ascii=False, indent=2, allow_nan=False) + '\n', encoding='utf-8')
+    web_payload = json.dumps(data, ensure_ascii=False, separators=(',', ':'), allow_nan=False)
+    args.web_output.write_text('window.FOREST_FEATURES = ' + web_payload + ';\n', encoding='utf-8')
+    print(f'{len(data["features"])} parcels, {sum(f["properties"]["points"] for f in data["features"])} vertices')
+    print(geojson)
+    print(args.web_output)
 
 
 if __name__ == '__main__':
-    directory = r'E:\forestrobo\林场范围哈'
-    features = parse_all_kmz(directory)
-
-    print('提取了 {} 个要素'.format(len(features)))
-    for f in features:
-        props = f['properties']
-        coords = f['geometry']['coordinates']
-        if f['geometry']['type'] == 'Polygon':
-            ring = coords[0]
-        else:
-            ring = coords
-        lons = [c[0] for c in ring]
-        lats = [c[1] for c in ring]
-        print('  "{}" ({}): {} 点, 经度 {:.5f}~{:.5f}, 纬度 {:.5f}~{:.5f}'.format(
-            props['name'], props['category'], props['points'],
-            min(lons), max(lons), min(lats), max(lats)))
-
-    # 输出 GeoJSON
-    geojson = {
-        'type': 'FeatureCollection',
-        'features': features,
-    }
-    out = os.path.join(directory, 'forest_features.geojson')
-    with open(out, 'w', encoding='utf-8') as f:
-        json.dump(geojson, f, ensure_ascii=False, indent=2)
-    print('\n已输出: {}'.format(out))
-    print('EXTRACT_DONE')
+    main()

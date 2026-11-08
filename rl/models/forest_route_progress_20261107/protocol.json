@@ -1,0 +1,23 @@
+{
+  "seeds": [
+    10140,
+    10141,
+    10142,
+    10143
+  ],
+  "scenarios": [
+    "dynamic"
+  ],
+  "modes": [
+    "weighted_local_observed",
+    "weighted_route_progress"
+  ],
+  "planned_cases": 8,
+  "footprint_m": 0.48,
+  "actuator": "same Cartesian gait, PI, follower, watchdog, and physical contacts",
+  "truth_map": "current-time simulator footprints, same local planner and scan cadence",
+  "checked_route": "fixed clearance-checked A* polyline including scheduled dynamic obstacle",
+  "clearance_bias": "soft obstacle cost in an additional 0.24 m band",
+  "weighted_local": "apply the same cost to the executable prefix inside the reachable set",
+  "route_progress": "compare anchor and current pose costs on one map revision"
+}

@@ -1,0 +1,27 @@
+{
+  "status": "template_not_measurement",
+  "project_id": "填写项目编号",
+  "building_id": "填写楼栋编号",
+  "coordinate_reference": null,
+  "length_unit": "m",
+  "control_points": [],
+  "independent_check_points": [],
+  "sensors": [],
+  "calibration_versions": [],
+  "deliverables": {
+    "registered_point_cloud": null,
+    "unobserved_region_map": null,
+    "registration_report": null,
+    "independent_accuracy_report": null,
+    "ifc_version_agreed": null,
+    "candidate_observations": [],
+    "human_reviews": []
+  },
+  "acceptance_thresholds_project_defined": {
+    "independent_point_rmse_mm": null,
+    "maximum_point_error_mm": null,
+    "coverage_fraction": null,
+    "revisit_pose_error_mm": null
+  },
+  "warning": "未填写/未实测字段不能当作合格；模板不提供结构安全结论。"
+}

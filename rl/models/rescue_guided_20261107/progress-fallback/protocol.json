@@ -1,0 +1,19 @@
+{
+  "seeds": [
+    28000,
+    28001,
+    28002,
+    28003,
+    28004,
+    28005,
+    28006,
+    28007
+  ],
+  "threshold_steps": 24,
+  "progress": [
+    "newly observed grid cells",
+    "newly recorded candidate cues"
+  ],
+  "outage_steps_counted": false,
+  "latch": "frontier until episode end"
+}

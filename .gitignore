@@ -12,6 +12,8 @@ rl/*.log
 rl/*.mp4
 
 # 媒体与生成物
+data/jianchang/orthophoto/
+data/leibo/terrain/
 rl/*.png
 rl/*.bin
 rl/terrain_hf.*
@@ -38,3 +40,23 @@ design/render/
 design/img/
 *.docx
 *.pdf
+
+# 依赖与临时目录
+node_modules/
+tools/
+tmp/
+_download/
+design/`n
+ForestRobo-Demo.zip
+ppt/
+
+# 大体积生成物与日志
+design/*.log
+design/*.glb
+web/*.log
+web/forest-autonomy-assets*/
+web/jianchang-assets/
+web/demo-assets/
+rl/models/**/scenes/
+rl/models/**/*.mp4
+rl/cases/osm-audit/

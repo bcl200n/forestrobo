@@ -1,0 +1,35 @@
+{
+  "schema": "forest-history-v3.1",
+  "embodiment": "foot",
+  "actual_timesteps": 262144,
+  "requested_timesteps": 262144,
+  "training_seed": 42,
+  "history": 4,
+  "terrain_seeds": [
+    [
+      100,
+      101,
+      102,
+      103
+    ],
+    [
+      200,
+      201,
+      202,
+      203
+    ]
+  ],
+  "stages": [
+    [
+      "smooth",
+      "nominal"
+    ],
+    [
+      "std",
+      "degraded"
+    ]
+  ],
+  "action_dim": 12,
+  "checkpoint_sha256": "259838d107003b600e933b73b36303cf9e6b38a913f08cb35feeb3d1f150f7a0",
+  "limitation": "Simulated sensor model and fixed generic robot; not deployable or real-hardware validated."
+}

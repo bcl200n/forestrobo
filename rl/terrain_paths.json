@@ -1,0 +1,67 @@
+{
+  "grid_size": [
+    60,
+    60
+  ],
+  "cell_size_m": 25,
+  "dem_stats": {
+    "min": 1232,
+    "max": 1458,
+    "mean": 1344
+  },
+  "slope_stats": {
+    "min": 0.2,
+    "max": 42.6,
+    "mean": 17.1
+  },
+  "paths": [
+    {
+      "region": "石斛",
+      "path": [
+        [
+          58,
+          17
+        ]
+      ],
+      "length_m": 25,
+      "climb_m": 0,
+      "cells": 1
+    },
+    {
+      "region": "黄莲",
+      "path": [
+        [
+          58,
+          17
+        ]
+      ],
+      "length_m": 25,
+      "climb_m": 0,
+      "cells": 1
+    },
+    {
+      "region": "待定",
+      "path": [
+        [
+          58,
+          17
+        ]
+      ],
+      "length_m": 25,
+      "climb_m": 0,
+      "cells": 1
+    },
+    {
+      "region": "待定",
+      "path": [
+        [
+          58,
+          17
+        ]
+      ],
+      "length_m": 25,
+      "climb_m": 0,
+      "cells": 1
+    }
+  ]
+}

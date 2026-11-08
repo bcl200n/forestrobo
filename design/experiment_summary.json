@@ -1,0 +1,219 @@
+{
+  "generated_at": "2026-11-06T09:26:13.236160+08:00",
+  "total_completed_timesteps": 655360,
+  "experiments": [
+    {
+      "experiment": "forest_v3_experiment",
+      "status": "complete",
+      "models": [
+        {
+          "embodiment": "foot",
+          "protocol": {
+            "schema": "forest-history-v3.1",
+            "embodiment": "foot",
+            "actual_timesteps": 262144,
+            "requested_timesteps": 262144,
+            "training_seed": 42,
+            "history": 4,
+            "terrain_seeds": [
+              [
+                100,
+                101,
+                102,
+                103
+              ],
+              [
+                200,
+                201,
+                202,
+                203
+              ]
+            ],
+            "stages": [
+              [
+                "smooth",
+                "nominal"
+              ],
+              [
+                "std",
+                "degraded"
+              ]
+            ],
+            "action_dim": 12,
+            "checkpoint_sha256": "259838d107003b600e933b73b36303cf9e6b38a913f08cb35feeb3d1f150f7a0",
+            "limitation": "Simulated sensor model and fixed generic robot; not deployable or real-hardware validated."
+          },
+          "baseline": {
+            "episodes": 36,
+            "success": 0,
+            "status": "complete",
+            "failures": {
+              "timeout": 21,
+              "fall": 15
+            },
+            "mean_progress_m": -0.43044577126781386,
+            "mean_mechanical_energy_j": 199.25624861713092
+          },
+          "evaluation": {
+            "episodes": 36,
+            "success": 0,
+            "status": "complete",
+            "failures": {
+              "fall": 35,
+              "timeout": 1
+            },
+            "mean_progress_m": 0.015705750097854132,
+            "mean_mechanical_energy_j": 185.53067709686346
+          }
+        },
+        {
+          "embodiment": "wheel",
+          "protocol": {
+            "schema": "forest-history-v3.1",
+            "embodiment": "wheel",
+            "actual_timesteps": 262144,
+            "requested_timesteps": 262144,
+            "training_seed": 42,
+            "history": 4,
+            "terrain_seeds": [
+              [
+                100,
+                101,
+                102,
+                103
+              ],
+              [
+                200,
+                201,
+                202,
+                203
+              ]
+            ],
+            "stages": [
+              [
+                "smooth",
+                "nominal"
+              ],
+              [
+                "std",
+                "degraded"
+              ]
+            ],
+            "action_dim": 16,
+            "checkpoint_sha256": "fd726fd8625c1ad1c81eeaa9e0ce4fc012560c76fbc279ad218754193d58513d",
+            "limitation": "Simulated sensor model and fixed generic robot; not deployable or real-hardware validated."
+          },
+          "baseline": {
+            "episodes": 36,
+            "success": 0,
+            "status": "complete",
+            "failures": {
+              "timeout": 21,
+              "fall": 15
+            },
+            "mean_progress_m": -0.4324914774641421,
+            "mean_mechanical_energy_j": 207.97069814949668
+          },
+          "evaluation": {
+            "episodes": 36,
+            "success": 0,
+            "status": "complete",
+            "failures": {
+              "timeout": 21,
+              "collision": 2,
+              "fall": 13
+            },
+            "mean_progress_m": -0.47083731292761477,
+            "mean_mechanical_energy_j": 3400.725239230191
+          }
+        }
+      ]
+    },
+    {
+      "experiment": "navigation_residual",
+      "status": "complete",
+      "models": [
+        {
+          "embodiment": "foot",
+          "protocol": {
+            "schema": "forest-navigation-residual-v1",
+            "actual_timesteps": 65536,
+            "terrain_seeds": [
+              300,
+              301,
+              302,
+              303
+            ],
+            "seed": 43,
+            "action_dim": 2,
+            "baseline": "same local goal controller with zero residuals",
+            "limitation": "CPG/differential low-level control is heuristic; no full-body stability proof"
+          },
+          "baseline": {
+            "episodes": 36,
+            "success": 0,
+            "status": "complete",
+            "failures": {
+              "timeout": 18,
+              "fall": 18
+            },
+            "mean_progress_m": -0.4333815347552494,
+            "mean_mechanical_energy_j": 469.67652708058336
+          },
+          "evaluation": {
+            "episodes": 36,
+            "success": 0,
+            "status": "complete",
+            "failures": {
+              "timeout": 16,
+              "fall": 19,
+              "collision": 1
+            },
+            "mean_progress_m": -0.383550101708581,
+            "mean_mechanical_energy_j": 395.3781712621776
+          }
+        },
+        {
+          "embodiment": "wheel",
+          "protocol": {
+            "schema": "forest-navigation-residual-v1",
+            "actual_timesteps": 65536,
+            "terrain_seeds": [
+              300,
+              301,
+              302,
+              303
+            ],
+            "seed": 43,
+            "action_dim": 2,
+            "baseline": "same local goal controller with zero residuals",
+            "limitation": "CPG/differential low-level control is heuristic; no full-body stability proof"
+          },
+          "baseline": {
+            "episodes": 36,
+            "success": 0,
+            "status": "complete",
+            "failures": {
+              "timeout": 16,
+              "fall": 20
+            },
+            "mean_progress_m": 0.23786880222068696,
+            "mean_mechanical_energy_j": 398.3015526609918
+          },
+          "evaluation": {
+            "episodes": 36,
+            "success": 0,
+            "status": "complete",
+            "failures": {
+              "timeout": 16,
+              "fall": 20
+            },
+            "mean_progress_m": 0.3068680879301706,
+            "mean_mechanical_energy_j": 452.98919736097326
+          }
+        }
+      ]
+    }
+  ],
+  "limitation": "Simulation only. Baselines differ between experiment families; no valid forest deployment claim."
+}

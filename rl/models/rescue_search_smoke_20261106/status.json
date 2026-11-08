@@ -1,0 +1,21 @@
+{
+  "schema": "rescue-observed-search-v1",
+  "status": "complete",
+  "pid": 30900,
+  "updated_at": "2026-11-06T11:51:40.917617+00:00",
+  "actual_steps": 2304,
+  "target_steps": 2048,
+  "worlds": 3,
+  "elapsed_s": 3.745665199996438,
+  "fps": 615.1110355517602,
+  "recent_episodes": 9,
+  "recent_success_rate": 0.0,
+  "latest_validation": null,
+  "last_checkpoint": null,
+  "scope": "Task-level 2-D grid search; NOT quadruped locomotion, arm control or real life detection",
+  "baseline_successes": 12,
+  "learned_successes": 0,
+  "test_cases": 12,
+  "promoted": false,
+  "deployment_ready": false
+}

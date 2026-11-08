@@ -1,0 +1,14 @@
+{
+  "schema": "forest-navigation-residual-v1",
+  "actual_timesteps": 65536,
+  "terrain_seeds": [
+    300,
+    301,
+    302,
+    303
+  ],
+  "seed": 43,
+  "action_dim": 2,
+  "baseline": "same local goal controller with zero residuals",
+  "limitation": "CPG/differential low-level control is heuristic; no full-body stability proof"
+}

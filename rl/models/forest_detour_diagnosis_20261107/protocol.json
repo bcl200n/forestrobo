@@ -1,0 +1,22 @@
+{
+  "seeds": [
+    10110,
+    10111,
+    10112,
+    10113
+  ],
+  "scenarios": [
+    "detour",
+    "dynamic"
+  ],
+  "modes": [
+    "observed_map",
+    "truth_map",
+    "checked_route"
+  ],
+  "planned_cases": 24,
+  "footprint_m": 0.48,
+  "actuator": "same Cartesian gait, PI, follower, watchdog, and physical contacts",
+  "truth_map": "current-time simulator footprints, same local planner and scan cadence",
+  "checked_route": "fixed clearance-checked A* polyline including scheduled dynamic obstacle"
+}

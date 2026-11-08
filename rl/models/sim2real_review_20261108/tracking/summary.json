@@ -1,0 +1,233 @@
+{
+  "schema": "forest-cartesian-tracking-residual-v1",
+  "deployment_ready": false,
+  "phase1_steps": 2000896,
+  "final_additional_steps": 3000320,
+  "checkpoints": {
+    "rl\\models\\tracking_slope\\phase1.zip": "ecaf1b2d186397d33358fc8d2469838d53b9d6831721f7347c1bb2846adbf707",
+    "rl\\models\\tracking_slope\\final.zip": "b6bc618c91652a6f749a9dc4a1cdcff87765af61131f9efcde419cd6ba7f0d7c"
+  },
+  "source_sha256": {
+    "rl\\evaluate_tracking_transfer.py": "2978ecb84defe3b8b3e7b140c4a42678426a7115f4380377a50372de5e07d5e4",
+    "robotics\\tracking_shadow.py": "57b07364d37b56285d7a09907543443336149498a178fc31421e55f4836c1213",
+    "rl\\forest_tracking_residual.py": "b6e6a8407163f98e57f27d5285e505d1fed67d12126a6c4ba82e00b367434a29",
+    "rl\\velocity_env.py": "34598a06fd3c9253eeaef29b7173c4334a930e69cd6ad46cd9b84b8b09e2494a",
+    "rl\\cartesian_gait.py": "983e35fec9673afc59c38fd50f5626a292717f6bd5e3d0af851dcd8ab328c9ff",
+    "rl\\generate_model.py": "255dae9f349abe3d4159e262bcca3650eb872541b7116c63bf0afb2776134d7f"
+  },
+  "holdout": {
+    "slopes_deg": [
+      -10.0,
+      -5.0,
+      5.0,
+      10.0
+    ],
+    "commands": [
+      [
+        0.22,
+        0.0,
+        0.0
+      ],
+      [
+        0.18,
+        0.08,
+        0.16
+      ],
+      [
+        0.16,
+        -0.09,
+        -0.24
+      ],
+      [
+        -0.08,
+        0.0,
+        0.14
+      ],
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "seeds": [
+      98200,
+      98201,
+      98202
+    ],
+    "horizon_s": 5,
+    "stress": {
+      "floor_sliding_friction": 0.6,
+      "trunk_point_payload_kg": 2
+    }
+  },
+  "results": {
+    "previous": {
+      "rule": {
+        "cases": 30,
+        "mean_score": 0.19177707174806155,
+        "worst_20pct_score": 0.4120475560433013,
+        "falls": 0,
+        "mean_episode_rmse": [
+          0.08385464906721178,
+          0.08643368958613702,
+          0.3343670740410788
+        ],
+        "stationary_mean_episode_rmse": [
+          0.009600254163500103,
+          0.0038700951791923155,
+          0.04274980537126726
+        ]
+      },
+      "phase1": {
+        "cases": 30,
+        "mean_score": 0.16577781852541584,
+        "worst_20pct_score": 0.25623844436111315,
+        "falls": 0,
+        "mean_episode_rmse": [
+          0.11016452336678063,
+          0.08413775248277996,
+          0.21105483504010253
+        ],
+        "stationary_mean_episode_rmse": [
+          0.1013490315594968,
+          0.07091501362587953,
+          0.11233844490157367
+        ]
+      },
+      "final": {
+        "cases": 30,
+        "mean_score": 0.1792704224138783,
+        "worst_20pct_score": 0.3270165273559401,
+        "falls": 0,
+        "mean_episode_rmse": [
+          0.11324695802301626,
+          0.08444904822364455,
+          0.25187802645118373
+        ],
+        "stationary_mean_episode_rmse": [
+          0.10327290525385895,
+          0.08923253021838269,
+          0.10678578135822288
+        ]
+      }
+    },
+    "holdout": {
+      "rule": {
+        "cases": 60,
+        "mean_score": 0.2273277441879995,
+        "worst_20pct_score": 0.48981064092661564,
+        "falls": 0,
+        "mean_episode_rmse": [
+          0.10943937767101583,
+          0.09099803350213988,
+          0.40563871402291485
+        ],
+        "stationary_mean_episode_rmse": [
+          0.016822211616829088,
+          0.01252874980109261,
+          0.08005808901391406
+        ]
+      },
+      "phase1": {
+        "cases": 60,
+        "mean_score": 0.20930296342409765,
+        "worst_20pct_score": 0.4065784648555346,
+        "falls": 0,
+        "mean_episode_rmse": [
+          0.12779312128343953,
+          0.09224964282598305,
+          0.3091482679205932
+        ],
+        "stationary_mean_episode_rmse": [
+          0.09263151765564871,
+          0.08204133366835245,
+          0.12803704174857453
+        ]
+      },
+      "final": {
+        "cases": 60,
+        "mean_score": 0.21963148940074684,
+        "worst_20pct_score": 0.43938807197598034,
+        "falls": 0,
+        "mean_episode_rmse": [
+          0.1330010137532481,
+          0.09713534992051681,
+          0.32859244660552267
+        ],
+        "stationary_mean_episode_rmse": [
+          0.09196620851631308,
+          0.09238031616687307,
+          0.10828989424898484
+        ]
+      }
+    },
+    "holdout_stress": {
+      "rule": {
+        "cases": 60,
+        "mean_score": 0.25369964877392764,
+        "worst_20pct_score": 0.5508374616446111,
+        "falls": 0,
+        "mean_episode_rmse": [
+          0.15579743211778624,
+          0.07409198854934644,
+          0.42664962987733257
+        ],
+        "stationary_mean_episode_rmse": [
+          0.055217332196475545,
+          0.022809339248356375,
+          0.21924155738830994
+        ]
+      },
+      "phase1": {
+        "cases": 60,
+        "mean_score": 0.2570874168391522,
+        "worst_20pct_score": 0.5607982194281249,
+        "falls": 0,
+        "mean_episode_rmse": [
+          0.1895656480694191,
+          0.08441703242535409,
+          0.3427717149509996
+        ],
+        "stationary_mean_episode_rmse": [
+          0.14545651635595327,
+          0.06181067737044027,
+          0.1446374060185652
+        ]
+      },
+      "final": {
+        "cases": 60,
+        "mean_score": 0.25084537014863284,
+        "worst_20pct_score": 0.5451906969203525,
+        "falls": 0,
+        "mean_episode_rmse": [
+          0.18824908019882217,
+          0.0811121538043255,
+          0.325986070269999
+        ],
+        "stationary_mean_episode_rmse": [
+          0.15131349974874345,
+          0.060723343418982535,
+          0.11440642746150796
+        ]
+      }
+    }
+  },
+  "shadow": {
+    "actor_sha256": "aab28aaaa509689c29031eb62a01960b74bb413a155d7c961c8904dc2f4ea6e8",
+    "compared_observations": 4346,
+    "max_abs_action_difference": 4.76837158203125e-07,
+    "max_abs_replay_residual_difference": 2.8610229491077277e-08,
+    "valid_replay_frames": 250,
+    "fault_frames": {
+      "nonmonotonic_tick": 1,
+      "stale_or_future_sample": 2,
+      "repeated_or_old_sample": 1,
+      "external_disable": 1,
+      "zero_reference": 1,
+      "reference_outside_training_range": 1,
+      "invalid_input": 1,
+      "tick_gap": 1
+    },
+    "recovered": true
+  }
+}

@@ -1,204 +1,288 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<title>雷波林场 — 多狗协同搜索</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>雷波林场 · 多狗协同搜索</title>
 <style>
-body{margin:0;background:#0d1117;color:#e6edf3;font-family:system-ui;display:flex;flex-direction:column;align-items:center}
-h2{margin:10px 0 2px;font-size:16px}
-.sub{font-size:12px;color:#8b49e;margin:2px 0 8px}
-#stats{font-family:Consolas,monospace;font-size:13px;color:#58a6ff;margin:4px 0}
-canvas{border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.5)}
-.legend{display:flex;gap:14px;font-size:11px;color:#849e;margin-top:6px;flex-wrap:wrap;justify-content:center}
-.sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:3px;vertical-align:middle}
+body{margin:16px;background:#0d1117;color:#e6edf3;font-family:system-ui;display:flex;flex-direction:column;align-items:center}
+h1{margin:8px 0 4px;font-size:20px}
+.sub{margin:4px 0 12px;color:#a7b5c2;font-size:13px;text-align:center}
+.controls,.legend{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 14px;margin:8px 0}
+select,button{padding:6px 10px;font:inherit;color:#e6edf3;background:#212a35;border:1px solid #526173;border-radius:5px}
+button:disabled,select:disabled{opacity:.55}
+canvas{width:min(100%,720px);height:auto;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+#stats{min-height:1.5em;margin:8px 0 2px;color:#8dbfff;font-size:14px;text-align:center}
+.legend{font-size:12px;color:#a7b5c2}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:4px;vertical-align:middle}
 </style>
 </head>
 <body>
-<h2>雷波林场 · 多狗协同搜索</h2>
-<div class="sub">林下经济地块（石斛 / 黄莲）· 10只机器狗 · 市场竞拍协同</div>
-<canvas id="cv"></canvas>
-<div id="stats">初始化...</div>
-<div class="legend">
-<span><span class="sw" style="background:#2d5a27"></span>石斛</span>
-<span><span class="sw" style="background:#5a4a2d"></span>黄莲</span>
-<span><span class="sw" style="background:#3a3a3a"></span>待定</span>
-<span><span class="sw" style="background:#ff5252;border-radius:50%"></span>目标</span>
-<span><span class="sw" style="background:#4caf50;border-radius:50%"></span>已找到</span>
+<h1>雷波林场 · 多狗协同搜索</h1>
+<p class="sub">KMZ 实际地块边界 · 北朝上 · 10 只机器狗二维搜索仿真<br>网格与目标为演示设定，轨迹由仿真生成。</p>
+<div class="controls">
+  <label for="plot">选择地块</label><select id="plot" disabled></select>
+  <button id="restart" type="button" disabled>重新搜索</button>
 </div>
+<canvas id="cv" width="720" height="720" aria-label="所选地块边界及模拟搜索过程"></canvas>
+<div id="stats" role="status">加载地块数据…</div>
+<div class="legend">
+  <span><span class="sw" style="background:#76b78a"></span>地块边界</span>
+  <span><span class="sw" style="background:#365657"></span>已搜索</span>
+  <span><span class="sw" style="background:#ff7575;border-radius:50%"></span>模拟目标</span>
+  <span><span class="sw" style="background:#7ce39b;border-radius:50%"></span>已找到</span>
+</div>
+<script src="forest_features.js"></script>
 <script>
 'use strict';
-var CELL=24, GS=40, W=GS*CELL;
-var cv=document.getElementById('cv'); cv.width=W; cv.height=W;
-var ctx=cv.getContext('2d');
-var stats=document.getElementById('stats');
 
-var REGIONS=[
-  {name:'石斛', color:'#2d5a27', label:'Dendrobium',
-   poly:[[8,32],[10,35],[14,36],[18,34],[20,30],[18,26],[14,24],[10,25],[8,28]]},
-  {name:'黄莲', color:'#5a4a2d', label:'Coptis',
-   poly:[[22,10],[26,8],[30,9],[34,12],[35,16],[33,20],[28,22],[24,20],[22,16]]},
-  {name:'待定A', color:'#3a3a3a', label:'',
-   poly:[[10,8],[14,6],[17,8],[16,12],[12,14],[9,12]]},
-  {name:'待定B', color:'#3a3a3a', label:'',
-   poly:[[28,28],[32,26],[35,28],[34,32],[30,34],[27,32]]}
-];
+const gridSize = 40;
+const cellPixels = 18;
+const dogColors = ['#4fc3f7','#ffb74d','#81c784','#e57373','#ba68c8','#4dd0e1','#f06292','#dce775','#ffa066','#9575cd'];
+const canvas = document.getElementById('cv');
+const ctx = canvas.getContext('2d');
+const stats = document.getElementById('stats');
+const plot = document.getElementById('plot');
+const restart = document.getElementById('restart');
+const features = (window.FOREST_FEATURES?.features ?? []).filter(feature =>
+  feature.geometry?.type === 'Polygon' && feature.geometry.coordinates[0]?.length >= 4);
+const featuresById = new Map(features.map(feature => [String(feature.id), feature]));
+let simulation;
+let timer;
 
-var DC=['#4fc3f7','#ffb74d','#81c784','#e57373','#ba68c8','#4dd0e1','#f06292','#aed581','#ff8a65','#9575cd'];
-var ND=10;
-var dogs=[], targets=[], found={}, step=0, timer=null;
-
-function init(){
-  step=0; found={}; dogs=[]; targets=[[12,30],[27,14],[12,10],[31,30]];
-  for(var i=0;i<ND;i++){
-    var a=2*Math.PI*i/ND;
-    dogs.push({id:i, x:20+5*Math.cos(a), y:20+5*Math.sin(a), known:{}, assigned:null});
-  }
-  if(timer)clearTimeout(timer);
-  tick();
+function projectRings(coordinates) {
+  const outer = coordinates[0];
+  const west = Math.min(...outer.map(point => point[0]));
+  const east = Math.max(...outer.map(point => point[0]));
+  const south = Math.min(...outer.map(point => point[1]));
+  const north = Math.max(...outer.map(point => point[1]));
+  // Scale longitude at the plot's mean latitude and use one scale for both axes.
+  const longitudeScale = Math.cos((south + north) * Math.PI / 360);
+  const width = (east - west) * longitudeScale;
+  const height = north - south;
+  const scale = (gridSize - 4) / Math.max(width, height);
+  return coordinates.map(ring => ring.map(([longitude, latitude]) => [
+    gridSize / 2 + (longitude - (west + east) / 2) * longitudeScale * scale,
+    gridSize / 2 + ((south + north) / 2 - latitude) * scale
+  ]));
 }
 
-function inPoly(x,y,poly){
-  var inside=false;
-  for(var i=0,j=poly.length-1;i<poly.length;j=i++){
-    if(((poly[i][1]>y)!==(poly[j][1]>y)) &&
-       x<(poly[j][0]-poly[i][0])*(y-poly[i][1])/(poly[j][1]-poly[i][1])+poly[i][0])
-      inside=!inside;
+function inRing(x, y, ring) {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [ax, ay] = ring[i];
+    const [bx, by] = ring[j];
+    if ((ay > y) !== (by > y) && x < (bx - ax) * (y - ay) / (by - ay) + ax) {
+      inside = !inside;
+    }
   }
   return inside;
 }
 
-function ok(x,y){
-  if(x<0||x>=GS||y<0||y>=GS)return false;
-  for(var i=0;i<REGIONS.length;i++)if(inPoly(x,y,REGIONS[i].poly))return true;
-  return false;
+function intersects(a, b, c, d) {
+  const cross = (p, q, r) => (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0]);
+  return Math.max(a[0], b[0]) >= Math.min(c[0], d[0]) &&
+    Math.max(c[0], d[0]) >= Math.min(a[0], b[0]) &&
+    Math.max(a[1], b[1]) >= Math.min(c[1], d[1]) &&
+    Math.max(c[1], d[1]) >= Math.min(a[1], b[1]) &&
+    cross(a, b, c) * cross(a, b, d) <= 0 &&
+    cross(c, d, a) * cross(c, d, b) <= 0;
 }
 
-function scan(d){
-  var x=Math.round(d.x), y=Math.round(d.y);
-  for(var dx=-3;dx<=3;dx++)for(var dy=-3;dy<=3;dy++){
-    if(dx*dx+dy*dy>9)continue;
-    d.known[(x+dx)+','+(y+dy)]=1;
-  }
-}
-
-function stepSim(){
-  step++;
-  // frontier auction
-  var idle=[], allF={}, k, i, d;
-  for(i=0;i<dogs.length;i++){
-    if(!dogs[i].assigned)idle.push(dogs[i]);
-    scan(dogs[i]);
-    var kn=dogs[i].known;
-    for(k in kn){
-      var p=k.split(','); var x=+p[0], y=+p[1];
-      var dirs=[[1,0],[-1,0],[0,1],[0,-1]];
-      for(var j=0;j<4;j++){
-        var nx=x+dirs[j][0], ny=y+dirs[j][1];
-        if(ok(nx,ny)&&!kn[nx+','+ny])allF[nx+','+ny]=[nx,ny];
+function buildGrid(rings) {
+  const cells = new Map();
+  for (let y = 0; y < gridSize; y++) {
+    for (let x = 0; x < gridSize; x++) {
+      const center = [x + .5, y + .5];
+      if (inRing(...center, rings[0]) && !rings.slice(1).some(ring => inRing(...center, ring))) {
+        cells.set(y * gridSize + x, {center, neighbors: []});
       }
     }
   }
-  for(i=0;i<targets.length;i++)if(!found[i])allF[targets[i][0]+','+targets[i][1]]=targets[i];
-  var cands=[];
-  for(k in allF){
-    var isAssigned=false;
-    for(var m=0;m<dogs.length;m++)if(dogs[m].assigned&&dogs[m].assigned.join(',')===k)isAssigned=true;
-    if(!isAssigned)cands.push(allF[k]);
-  }
-  for(i=0;i<idle.length;i++){
-    d=idle[i]; var best=null,bb=-1;
-    for(var c=0;c<cands.length;c++){
-      var t=cands[c];
-      var dist=Math.sqrt((t[0]-d.x)*(t[0]-d.x)+(t[1]-d.y)*(t[1]-d.y));
-      var b=10/(1+dist);
-      if(b>bb){bb=b;best=t;}
-    }
-    if(best){d.assigned=best;cands.splice(cands.indexOf(best),1);}
-  }
-  // move
-  for(i=0;i<dogs.length;i++){
-    d=dogs[i];
-    if(!d.assigned)continue;
-    var tx=d.assigned[0], ty=d.assigned[1];
-    var dx=tx-d.x, dy=ty-d.y, dist=Math.sqrt(dx*dx+dy*dy);
-    if(dist<0.5){d.assigned=null;continue;}
-    var nx=d.x+dx/dist*0.6, ny=d.y+dy/dist*0.6;
-    if(ok(nx,ny)){d.x=nx;d.y=ny;}else{d.assigned=null;}
-    for(var ti=0;ti<targets.length;ti++){
-      if(!found[ti]&&Math.sqrt((d.x-targets[ti][0])*(d.x-targets[ti][0])+(d.y-targets[ti][1])*(d.y-targets[ti][1]))<1.5)
-        found[ti]=1;
+  const edges = rings.flatMap(ring => ring.slice(1).map((point, i) => [ring[i], point]));
+  for (const [key, cell] of cells) {
+    // Join adjacent centers only when the entire segment stays within the plot.
+    for (const neighborKey of [key + 1, key + gridSize]) {
+      const neighbor = cells.get(neighborKey);
+      if (!neighbor || edges.some(([a, b]) => intersects(cell.center, neighbor.center, a, b))) {
+        continue;
+      }
+      cell.neighbors.push(neighbor);
+      neighbor.neighbors.push(cell);
     }
   }
-  var cnt=0;for(k in found)cnt++;
-  return cnt===targets.length;
+  return cells;
 }
 
-function draw(){
-  ctx.fillStyle='#161b22';ctx.fillRect(0,0,W,W);
-  // explored
-  for(var x=0;x<GS;x++)for(var y=0;y<GS;y++){
-    var seen=false;
-    for(var i=0;i<dogs.length;i++)if(dogs[i].known[x+','+y]){seen=true;break;}
-    if(seen){ctx.fillStyle='#263238';ctx.fillRect(x*CELL,y*CELL,CELL-1,CELL-1);}
+function searchFrom(start, limit = Infinity) {
+  const order = [start];
+  const records = new Map([[start, {distance: 0, parent: null}]]);
+  for (let i = 0; i < order.length; i++) {
+    const cell = order[i];
+    const {distance} = records.get(cell);
+    if (distance === limit) continue;
+    for (const neighbor of cell.neighbors) {
+      if (records.has(neighbor)) continue;
+      order.push(neighbor);
+      records.set(neighbor, {distance: distance + 1, parent: cell});
+    }
   }
-  // regions
-  for(var r=0;r<REGIONS.length;r++){
-    var reg=REGIONS[r];
-    ctx.beginPath();
-    for(var p=0;p<reg.poly.length;p++){
-      var px=reg.poly[p][0]*CELL, py=reg.poly[p][1]*CELL;
-      if(p===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+  return {order, records};
+}
+
+function largestComponent(cells) {
+  const visited = new Set();
+  let largest = [];
+  for (const cell of cells.values()) {
+    if (visited.has(cell)) continue;
+    const {order} = searchFrom(cell);
+    order.forEach(neighbor => visited.add(neighbor));
+    if (order.length > largest.length) largest = order;
+  }
+  return largest;
+}
+
+function setupSimulation(rings) {
+  const component = largestComponent(buildGrid(rings));
+  if (component.length <= dogColors.length) return null;
+  const centerDistance = cell => Math.hypot(cell.center[0] - gridSize / 2, cell.center[1] - gridSize / 2);
+  const start = component.reduce((closest, cell) =>
+    centerDistance(cell) < centerDistance(closest) ? cell : closest);
+  const starts = searchFrom(start).order.slice(0, dogColors.length);
+  const available = new Set(component.filter(cell => !starts.includes(cell)));
+  const targets = [];
+  const distances = [searchFrom(start).records];
+  while (targets.length < 4 && available.size) {
+    let farthest;
+    let best = -1;
+    for (const cell of available) {
+      const distance = Math.min(...distances.map(map => map.get(cell).distance));
+      if (distance > best) {
+        farthest = cell;
+        best = distance;
+      }
+    }
+    available.delete(farthest);
+    targets.push(farthest);
+    distances.push(searchFrom(farthest).records);
+  }
+  return {rings, targets, dogs: starts.map(cell => ({cell, path: []})), seen: new Set(), step: 0};
+}
+
+function stepSim({dogs, seen, targets}) {
+  for (const dog of dogs) {
+    searchFrom(dog.cell, 3).order.forEach(cell => seen.add(cell));
+    if (seen.has(dog.path.at(-1))) dog.path = [];
+  }
+  if (targets.every(target => seen.has(target))) return true;
+
+  const frontier = new Set();
+  for (const cell of seen) {
+    for (const neighbor of cell.neighbors) {
+      if (!seen.has(neighbor)) frontier.add(neighbor);
+    }
+  }
+  for (const dog of dogs) frontier.delete(dog.path.at(-1));
+  for (const dog of dogs) {
+    if (dog.path.length || !frontier.size) continue;
+    const {order, records} = searchFrom(dog.cell);
+    const destination = order.find(cell => frontier.has(cell));
+    if (!destination) continue;
+    frontier.delete(destination);
+    for (let cell = destination; cell !== dog.cell; cell = records.get(cell).parent) {
+      dog.path.unshift(cell);
+    }
+  }
+  for (const dog of dogs) {
+    if (dog.path.length) dog.cell = dog.path.shift();
+  }
+  return false;
+}
+
+function draw() {
+  ctx.fillStyle = '#151e26';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  if (!simulation) return;
+  const {rings, dogs, seen, targets} = simulation;
+  ctx.beginPath();
+  for (const ring of rings) {
+    for (const [index, [x, y]] of ring.entries()) {
+      if (index === 0) ctx.moveTo(x * cellPixels, y * cellPixels);
+      else ctx.lineTo(x * cellPixels, y * cellPixels);
     }
     ctx.closePath();
-    ctx.fillStyle=reg.color;ctx.globalAlpha=.3;ctx.fill();ctx.globalAlpha=1;
-    ctx.strokeStyle=reg.color;ctx.lineWidth=2;ctx.stroke();
-    // label
-    var cx=0,cy=0;
-    for(p=0;p<reg.poly.length;p++){cx+=reg.poly[p][0];cy+=reg.poly[p][1];}
-    cx/=reg.poly.length;cy/=reg.poly.length;
-    ctx.fillStyle='#e0e0e0';ctx.font='bold 11px sans-serif';ctx.textAlign='center';
-    ctx.fillText(reg.name,cx*CELL,cy*CELL);
   }
-  // targets
-  for(var i=0;i<targets.length;i++){
-    var tx=(targets[i][0]+.5)*CELL, ty=(targets[i][1]+.5)*CELL;
-    if(found[i]){
-      ctx.fillStyle='#4caf50';ctx.beginPath();ctx.arc(tx,ty,8,0,7);ctx.fill();
-      ctx.fillStyle='#fff';ctx.font='bold 10px sans-serif';ctx.fillText('✓',tx,ty+3);
-    }else{
-      ctx.strokeStyle='#ff5252';ctx.setLineDash([3,2]);ctx.lineWidth=2.5;
-      ctx.beginPath();ctx.arc(tx,ty,8,0,7);ctx.stroke();ctx.setLineDash([]);
-    }
+  ctx.fillStyle = '#233c34';
+  ctx.fill('evenodd');
+  ctx.save();
+  ctx.clip('evenodd');
+  ctx.fillStyle = '#365657';
+  for (const {center: [x, y]} of seen) {
+    ctx.fillRect((x - .5) * cellPixels, (y - .5) * cellPixels, cellPixels - 1, cellPixels - 1);
   }
-  // dogs
-  for(i=0;i<dogs.length;i++){
-    var d=dogs[i];
-    var cx=(d.x+.5)*CELL, cy=(d.y+.5)*CELL;
-    if(d.assigned){
-      ctx.strokeStyle=DC[i%DC.length];ctx.globalAlpha=.35;ctx.lineWidth=1;
-      ctx.setLineDash([2,3]);
-      ctx.beginPath();ctx.moveTo(cx,cy);
-      ctx.lineTo((d.assigned[0]+.5)*CELL,(d.assigned[1]+.5)*CELL);ctx.stroke();
-      ctx.setLineDash([]);ctx.globalAlpha=1;
-    }
-    ctx.fillStyle=DC[i%DC.length];
-    ctx.beginPath();ctx.moveTo(cx,cy-7);ctx.lineTo(cx-6,cy+5);ctx.lineTo(cx+6,cy+5);
-    ctx.closePath();ctx.fill();
-    ctx.strokeStyle='#fff';ctx.lineWidth=.5;ctx.stroke();
-    ctx.fillStyle=DC[i%DC.length];ctx.font='8px Consolas';ctx.fillText(''+d.id,cx,cy+14);
+  ctx.restore();
+  ctx.strokeStyle = '#76b78a';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  for (const cell of targets) {
+    const [x, y] = cell.center.map(value => value * cellPixels);
+    ctx.strokeStyle = seen.has(cell) ? '#7ce39b' : '#ff7575';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y, 6, 0, 2 * Math.PI);
+    ctx.stroke();
   }
-  var fc=0;for(var k in found)fc++;
-  stats.textContent='步数='+step+'  找到='+fc+'/'+targets.length+'  狗='+dogs.length;
+  for (const [index, dog] of dogs.entries()) {
+    const [x, y] = dog.cell.center.map(value => value * cellPixels);
+    ctx.fillStyle = dogColors[index];
+    ctx.beginPath();
+    ctx.moveTo(x, y - 7);
+    ctx.lineTo(x - 6, y + 5);
+    ctx.lineTo(x + 6, y + 5);
+    ctx.closePath();
+    ctx.fill();
+  }
 }
 
-function tick(){
-  var done=stepSim();
+function tick() {
+  simulation.step++;
+  const done = stepSim(simulation);
   draw();
-  if(done){stats.textContent+='  ✓ 全部找到!';return;}
-  timer=setTimeout(tick,80);
+  const {step, dogs, seen, targets} = simulation;
+  stats.textContent = `第 ${step} 步 · ${dogs.length} 只机器狗 · 找到 ${targets.filter(target => seen.has(target)).length}/${targets.length} 个目标${done ? ' · 搜索完成' : ''}`;
+  if (!done) timer = setTimeout(tick, 90);
 }
 
-try{init();}catch(e){stats.textContent='错误: '+e.message;}
+function init() {
+  clearTimeout(timer);
+  const feature = featuresById.get(plot.value);
+  simulation = feature ? setupSimulation(projectRings(feature.geometry.coordinates)) : null;
+  if (simulation) {
+    tick();
+  } else {
+    draw();
+    stats.textContent = feature ? '地块内可连接的网格不足。请选择其他地块。' :
+      '未加载林场地块。请确认本页与 forest_features.js 位于同一目录。';
+  }
+}
+
+const labelCounts = new Map();
+for (const feature of features) {
+  const {name, category, functionZone} = feature.properties;
+  const group = category.replace(/\(\d+\)$/, '');
+  const base = `${functionZone || name} · ${group}`;
+  const count = (labelCounts.get(base) ?? 0) + 1;
+  labelCounts.set(base, count);
+  const option = document.createElement('option');
+  option.value = String(feature.id);
+  option.textContent = count > 1 ? `${base}（${count}）` : base;
+  plot.append(option);
+}
+plot.disabled = restart.disabled = !features.length;
+plot.addEventListener('change', init);
+restart.addEventListener('click', init);
+init();
 </script>
 </body>
 </html>

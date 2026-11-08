@@ -1,0 +1,75 @@
+{
+  "schema": "xichang-interior-coverage-v1",
+  "map": {
+    "name": "四川西昌·建昌古城内部街巷研究区",
+    "reference_lonlat": [
+      102.272211,
+      27.8969251
+    ],
+    "southwest_offset_m": [
+      -600,
+      -276
+    ],
+    "grid_size": 128,
+    "cell_m": 8,
+    "start_offset_m": [
+      -246,
+      -188
+    ],
+    "street_buffers_m": {
+      "footway": 9,
+      "path": 9,
+      "residential": 12,
+      "unclassified": 12,
+      "tertiary": 14,
+      "secondary": 14,
+      "primary": 14,
+      "secondary_link": 12,
+      "primary_link": 12,
+      "crossing": 9,
+      "service": 10,
+      "pedestrian": 12
+    },
+    "wall_buffer_m": 4,
+    "extract_bbox_wgs84": [
+      102.266,
+      27.895,
+      102.276,
+      27.905
+    ],
+    "extracted_utc": "2026-11-07T08:55:29.545225+00:00",
+    "attribution": "© OpenStreetMap contributors",
+    "license": "ODbL 1.0",
+    "license_url": "https://www.openstreetmap.org/copyright",
+    "source": "https://api.openstreetmap.org/api/0.6/map?bbox=102.266,27.895,102.276,27.905",
+    "source_sha256": "b3b9f2bd2bfeb815131226a2689f5ba977fcd39d91e21ef701602df267b06f8d",
+    "study_extent_offset_m": [
+      -600,
+      -276,
+      424,
+      748
+    ],
+    "geometry_note": "道路、城墙和建筑采用同一 OpenStreetMap XML 快照中的完整要素，按研究范围的外包矩形筛选；部分折线节点位于研究范围外。",
+    "unmodeled_note": "未标注巷道和街坊内部保留为未建模区域。道路缓冲半径沿用仿真假设，实际宽度和通行条件需要现场测量。"
+  },
+  "seed": 38000,
+  "scenarios": [
+    "corridor",
+    "rubble",
+    "dropout"
+  ],
+  "horizon": 2048,
+  "coverage_goal": 0.98,
+  "source_hashes": {
+    "evaluate_xichang_interior.py": "c47c21088c1bfc38a585863b6205ae8b80a243a4c158dfd5bccb30f4b040fd72",
+    "evaluate_rescue_coverage.py": "527c39db35c515d4eedd7bc4b6edaade5e5aa7202bb3bb1f48a71f01a00c92e0",
+    "rescue_coverage.py": "bdd4caf50556f025ebeaa4f2817b284e55520a6d1938fcdca556e5c81af4e89b",
+    "rescue_search_env.py": "e2166c6adab4987ea2f9fbe4714397a0ce468ec98aaad2de86affc522735b495",
+    "train_rescue_long_horizon.py": "dc02b44c2aad17dcb67ae2d22ff1342ca8839e497df5c244cd33173245ab881b",
+    "train_rescue_offline_multiscale.py": "85a8cde48be71655ef944a71225635a378eb732cdfc72330517f6c2dc7bf0e00",
+    "train_rescue_scan_wait.py": "37366e32c79309b16a2e96a61305da1de49ed706ccff1443759b31f9c53bd55b",
+    "train_rescue_guided.py": "0f1c0c0b2638f04571d3913f5221bb3590e71ceaaad576d67a54dc5c756dd8e8"
+  },
+  "case_hash": "d9d6b36923a427fa61cb04b3e70033bf9be715d0a6d10730403c9866e809f4c2",
+  "scope": "One expanded real street network, synthetic cues and disturbances; truth used only in scoring/termination"
+}

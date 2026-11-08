@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """修复 LocalGrid.route 的绕行能力:
 1. 可达距离上限 1.8→5.0 m (绕障需要更远视野)
-2. 增加全局 A* 直接在观测图上规划 (替代原来的 grid_distances+评分)
+2. 已知图上的完整路线使用 A*，加权模式使用带净空代价的 Dijkstra
 3. 保留原有 clearance_bias/weighted_local 参数兼容性
 """
 import math
@@ -13,8 +13,8 @@ from robotics.terrain_planner import plan, inflate
 REACH_LIMIT_M = 5.0
 
 
-def grid_distances(start, blocked, resolution, limit=float('inf'), *, penalty=None):
-    """Dijkstra on a grid with diagonal corner checks."""
+def grid_distances(start, blocked, resolution, limit=float('inf'), *, penalty=None, target=None):
+    """Dijkstra with corner checks, optionally stopping once target is settled."""
     rows, cols = blocked.shape
     if blocked[start]:
         return {}, {}
@@ -24,6 +24,8 @@ def grid_distances(start, blocked, resolution, limit=float('inf'), *, penalty=No
         cost, cell = heapq.heappop(queue)
         if cost > costs[cell] + 1e-9:
             continue
+        if cell == target:
+            break
         for dr in (-1, 0, 1):
             for dc in (-1, 0, 1):
                 if not (dr or dc):
@@ -89,6 +91,12 @@ class LocalGrid:
             self.occupied[c] = True
         self.last_update = stamp
 
+    def _path_points(self, start, end, parents):
+        path = [end]
+        while path[-1] != start:
+            path.append(parents[path[-1]])
+        return [self.point(cell).tolist() for cell in reversed(path)]
+
     def route(self, position, goal, radius=.48, *, geodesic=False,
               clearance_bias=False, weighted_local=False):
         self.goal_costs = {}
@@ -110,19 +118,22 @@ class LocalGrid:
             if start not in goal_costs:
                 return []
 
-        # === 全局 A* 直接在观测图上规划 ===
         # 可执行路线: 已知自由 + 障碍膨胀(含物理半径)
         blocked = inflate(~self.known | self.occupied, self.resolution, radius)
 
-        # 先尝试直接用 terrain_planner 的 plan() 全局规划
-        heights = np.zeros(self.known.shape)  # 平面假设(局部网格)
-        result = plan(heights, blocked.astype(float), start, goal_cell,
-                      self.resolution, footprint_radius_m=0)  # 已 inflate 过
-
-        if result['found']:
-            # 全局路线找到, 直接返回路径点
-            path_cells = result['path']
-            return [self.point(c).tolist() for c in path_cells]
+        if weighted_local:
+            if not blocked[goal_cell]:
+                full_costs, parents = grid_distances(start, blocked, self.resolution,
+                                                      penalty=penalty, target=goal_cell)
+                if goal_cell in full_costs:
+                    return self._path_points(start, goal_cell, parents)
+        else:
+            # 普通模式保留平面 A*；加权模式在同一硬净空图上应用软净空代价。
+            heights = np.zeros(self.known.shape)
+            result = plan(heights, blocked.astype(float), start, goal_cell,
+                          self.resolution, footprint_radius_m=0)
+            if result['found']:
+                return [self.point(cell).tolist() for cell in result['path']]
 
         # 全局路线不通(被未知区域阻断), 退回到原有的局部可达+评分逻辑
         costs, parent = grid_distances(start, blocked, self.resolution,
@@ -163,10 +174,7 @@ class LocalGrid:
                 best, score = cell, value
         if best is None:
             return []
-        path = [best]
-        while path[-1] != start:
-            path.append(parent[path[-1]])
-        return [self.point(c).tolist() for c in path[::-1]]
+        return self._path_points(start, best, parent)
 
 
 class WaypointFollower:

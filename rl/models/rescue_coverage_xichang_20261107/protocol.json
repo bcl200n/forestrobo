@@ -1,0 +1,100 @@
+{
+  "schema": "rescue-cue-coverage-v1",
+  "scenarios": [
+    "corridor",
+    "rubble",
+    "dropout"
+  ],
+  "seeds": {
+    "reproduction": [
+      35012
+    ],
+    "detour_holdout": [
+      36000,
+      36001,
+      36002,
+      36003,
+      36004,
+      36005,
+      36006,
+      36007,
+      36008,
+      36009,
+      36010,
+      36011,
+      36012,
+      36013,
+      36014,
+      36015
+    ],
+    "street_case": [
+      37000,
+      37001,
+      37002,
+      37003,
+      37004,
+      37005,
+      37006,
+      37007,
+      37008,
+      37009,
+      37010,
+      37011,
+      37012,
+      37013,
+      37014,
+      37015
+    ]
+  },
+  "map": {
+    "name": "四川西昌·建昌古城府街—涌泉街",
+    "reference_lonlat": [
+      102.272211,
+      27.8969251
+    ],
+    "southwest_offset_m": [
+      -280,
+      -244
+    ],
+    "grid_size": 64,
+    "cell_m": 8,
+    "start_offset_m": [
+      -246,
+      -188
+    ],
+    "street_buffers_m": {
+      "footway": 9,
+      "path": 9,
+      "residential": 12,
+      "unclassified": 12,
+      "tertiary": 14,
+      "secondary": 14,
+      "primary": 14,
+      "secondary_link": 12,
+      "primary_link": 12,
+      "crossing": 9,
+      "service": 10,
+      "pedestrian": 12
+    },
+    "wall_buffer_m": 4,
+    "extract_bbox_wgs84": [
+      102.266,
+      27.895,
+      102.276,
+      27.905
+    ],
+    "extracted_utc": "2026-11-07T08:55:29.545225+00:00",
+    "attribution": "© OpenStreetMap contributors",
+    "license": "ODbL 1.0",
+    "license_url": "https://www.openstreetmap.org/copyright",
+    "source": "https://api.openstreetmap.org/api/0.6/map?bbox=102.266,27.895,102.276,27.905"
+  },
+  "map_sha256": "c881bb0cadca700ffec69baeabf108272908bb28bbef1a939f0219a50a71e3cf",
+  "cue_range_cells": 3,
+  "horizons": {
+    "reproduction": 256,
+    "detour_holdout": 256,
+    "street_case": 512
+  },
+  "case_scope": "One real street geometry; simulated corridor widths, blockages, outages and clues"
+}

@@ -1,0 +1,18 @@
+{
+  "status": "complete",
+  "actual_steps": 49152,
+  "updated_at": "2026-11-07T07:41:15.308529+00:00",
+  "schema": "forest-cartesian-tracking-residual-v1",
+  "passed_tracking_gate": true,
+  "deployment_ready": false,
+  "baseline": {
+    "mean_score": 0.19177707174806155,
+    "worst_20pct_score": 0.4120475560433013,
+    "falls": 0
+  },
+  "learned": {
+    "mean_score": 0.18955824708633598,
+    "worst_20pct_score": 0.3834125234376264,
+    "falls": 0
+  }
+}
