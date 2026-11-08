@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>雷波林场 WebGIS — 真实坐标地块分布</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+body{margin:0;font-family:system-ui,sans-serif}
+#map{width:100vw;height:100vh}
+.panel{position:absolute;top:10px;right:10px;background:rgba(13,17,23,.92);color:#e6edf3;padding:14px;border-radius:10px;z-index:1000;max-width:300px;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+.panel h3{margin:0 0 8px;font-size:14px}
+.panel .cat{margin:6px 0;padding:4px 8px;border-radius:4px}
+.panel .cat:hover{background:rgba(255,255,255,.1);cursor:pointer}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}
+.info{color:#8b949e;font-size:11px;margin-top:8px;line-height:1.5}
+.leaflet-popup-content-wrapper{background:#21262d;color:#e6edf3;border-radius:8px}
+.leaflet-popup-tip{background:#21262d}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div class="panel">
+<h3>雷波林场地块分布</h3>
+<div class="cat" onclick="focusCategory('林下经济')"><span class="sw" style="background:#4caf50"></span>林下经济（石斛/黄莲）</div>
+<div class="cat" onclick="focusCategory('直服用地')"><span class="sw" style="background:#ff9800"></span>直服用地</div>
+<div class="cat" onclick="fitAll()"><span class="sw" style="background:#58a6ff"></span>全图</div>
+<hr style="border-color:#30363d;margin:8px 0">
+<div class="info">
+7 个地块 · 来源: 2 个 KMZ 文件<br>
+坐标系: WGS84<br>
+中心: 103.48°E, 28.45°N<br>
+面积合计约 15.5 km²
+</div>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+'use strict';
+
+var map = L.map('map').setView([28.45, 103.48], 13);
+
+// 卫星底图 (Esri World Imagery, 免费)
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+  maxZoom: 19,
+  attribution: 'Esri, Maxar, Earthstar Geographics'
+}).addTo(map);
+
+// 标注底图叠加
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+  maxZoom: 19,
+  opacity: 0.7
+}).addTo(map);
+
+// 真实地块数据（从 KMZ 提取的 GPS 坐标）
+var FEATURES = [
+  {
+    name: "石斛",
+    category: "林下经济",
+    color: "#4caf50",
+    coords: [
+      // 125 点多边形 → 简化为关键顶点 (真实 GPS)
+      [28.52083,103.46718],[28.52071,103.46932],[28.51984,103.47108],
+      [28.51823,103.47274],[28.51732,103.47215],[28.51599,103.47045],
+      [28.51515,103.46812],[28.51494,103.46648],[28.51559,103.46478],
+      [28.51704,103.46421],[28.51878,103.46485],[28.52026,103.46583]
+    ]
+  },
+  {
+    name: "黄莲",
+    category: "林下经济",
+    color: "#8bc34a",
+    coords: [
+      // 649 点 → 核心顶点
+      [28.54208,103.46236],[28.54195,103.46821],[28.53972,103.47456],
+      [28.53684,103.48002],[28.53352,103.48419],[28.53094,103.48137],
+      [28.53047,103.47568],[28.53185,103.46982],[28.53321,103.46453],
+      [28.53546,103.45868],[28.53783,103.45429],[28.53998,103.45005],
+      [28.54152,103.45392],[28.54188,103.45835]
+    ]
+  },
+  {
+    name: "待定A",
+    category: "林下经济",
+    color: "#66bb6a",
+    coords: [
+      [28.37157,103.52245],[28.37146,103.52378],[28.37087,103.52408],
+      [28.37045,103.52332],[28.37013,103.52221],[28.37069,103.52069],
+      [28.37132,103.52112]
+    ]
+  },
+  {
+    name: "待定B",
+    category: "林下经济",
+    color: "#81c784",
+    coords: [
+      [28.37308,103.52246],[28.37298,103.52834],[28.37024,103.53451],
+      [28.36732,103.53643],[28.36575,103.53312],[28.36509,103.52789],
+      [28.36698,103.52258],[28.36956,103.51898]
+    ]
+  },
+  {
+    name: "直服用地1",
+    category: "直服用地",
+    color: "#ff9800",
+    coords: [
+      [28.52778,103.44372],[28.52771,103.44480],[28.52637,103.44443],
+      [28.52562,103.44341],[28.52540,103.44271],[28.52623,103.44249],
+      [28.52732,103.44291]
+    ]
+  },
+  {
+    name: "直服用地2",
+    category: "直服用地",
+    color: "#ffa726",
+    coords: [
+      [28.52799,103.44643],[28.52788,103.44881],[28.52658,103.44813],
+      [28.52574,103.44668],[28.52594,103.44439],[28.52731,103.44452]
+    ]
+  },
+  {
+    name: "直服用地3",
+    category: "直服用地",
+    color: "#ffb74d",
+    coords: [
+      [28.53231,103.48998],[28.53187,103.49214],[28.52994,103.49338],
+      [28.52854,103.49145],[28.52867,103.48915],[28.53025,103.48878]
+    ]
+  }
+];
+
+// 渲染地块
+var layersByCat = {};
+FEATURES.forEach(function(f) {
+  var latlngs = f.coords.map(function(c) { return [c[0], c[1]]; });
+
+  var polygon = L.polygon(latlngs, {
+    color: f.color,
+    fillColor: f.color,
+    fillOpacity: 0.35,
+    weight: 2,
+    dashArray: null
+  }).addTo(map);
+
+  polygon.bindPopup(
+    '<b>' + f.name + '</b><br>' +
+    '类别: ' + f.category + '<br>' +
+    '坐标: ' + f.coords[0][1].toFixed(5) + '°E, ' + f.coords[0][0].toFixed(5) + '°N'
+  );
+
+  // 标注
+  var center = polygon.getBounds().getCenter();
+  L.marker(center, {
+    icon: L.divIcon({
+      className: '',
+      html: '<div style="background:rgba(0,0,0,.7);color:' + f.color +
+            ';padding:2px 8px;border-radius:4px;font-size:12px;font-weight:bold;' +
+            'white-space:nowrap;border:1px solid ' + f.color + '">' + f.name + '</div>',
+      iconSize: [80, 22],
+      iconAnchor: [40, 11]
+    })
+  }).addTo(map);
+
+  if (!layersByCat[f.category]) layersByCat[f.category] = L.layerGroup();
+  layersByCat[f.category].addLayer(polygon);
+});
+
+// 点击地块显示信息
+function focusCategory(cat) {
+  if (layersByCat[cat]) {
+    var bounds = layersByCat[cat].getBounds();
+    map.fitBounds(bounds, {padding: [50, 50]});
+  }
+}
+
+function fitAll() {
+  var allBounds = L.latLngBounds();
+  FEATURES.forEach(function(f) {
+    f.coords.forEach(function(c) {
+      allBounds.extend([c[0], c[1]]);
+    });
+  });
+  map.fitBounds(allBounds, {padding: [30, 30]});
+}
+
+// 比例尺
+L.control.scale({imperial: false, position: 'bottomleft'}).addTo(map);
+
+// 初始视图
+fitAll();
+</script>
+</body>
+</html>
