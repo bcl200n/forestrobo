@@ -1,0 +1,10 @@
+{
+ "z": 12,
+ "x0": 3223,
+ "y0": 1707,
+ "rows": 1536,
+ "cols": 1536,
+ "res_deg": 0.00034332275390625,
+ "top_lat": 28.6905876542507,
+ "source": "Mapzen terrarium (SRTM/ETOPO blend) via AWS Open Data"
+}

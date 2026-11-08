@@ -15,6 +15,7 @@ rl/*.mp4
 data/jianchang/orthophoto/
 data/leibo/terrain/
 rl/*.png
+!rl/hillshade.png
 rl/*.bin
 rl/terrain_hf.*
 rl/terrain_rubble_*
