@@ -1,0 +1,223 @@
+{
+ "iter": 12,
+ "score": 0.0,
+ "res": {
+  "C1": {
+   "surv": 0.0,
+   "reach": 0.0,
+   "causes": {
+    "fall": 9,
+    "collision": 6
+   }
+  },
+  "C2": {
+   "surv": 0.0,
+   "reach": 0.0,
+   "causes": {
+    "fall": 14,
+    "collision": 1
+   }
+  },
+  "C3": {
+   "surv": 0.0,
+   "reach": 0.0,
+   "causes": {
+    "fall": 15
+   }
+  },
+  "smooth": {
+   "surv": 0.1
+  }
+ },
+ "history": [
+  {
+   "iter": 1,
+   "action": "base_v13_bridge",
+   "params": {
+    "base": "models/forest_v13/final",
+    "terrain": "S16",
+    "ent": 0.005,
+    "lr": 0.0001,
+    "cfg": {
+     "tilt_rel_w": 2.5,
+     "alive_w": 0.3
+    }
+   },
+   "score": 0.0,
+   "gain": 0.0,
+   "accept": false
+  },
+  {
+   "iter": 2,
+   "action": "tilt_boost",
+   "params": {
+    "terrain": "C1",
+    "ent": 0.004,
+    "lr": 7e-05,
+    "cfg": {
+     "tilt_rel_w": 3.0,
+     "tilt_abs_w": 0.2
+    }
+   },
+   "score": 0.0,
+   "gain": 0.0,
+   "accept": false
+  },
+  {
+   "iter": 3,
+   "action": "stall_reset",
+   "params": {
+    "terrain": "C2",
+    "ent": 0.008,
+    "lr": 5e-05,
+    "cfg": null
+   },
+   "score": 0.0,
+   "gain": 0.0,
+   "accept": false
+  },
+  {
+   "iter": 4,
+   "action": "base_v13_bridge",
+   "params": {
+    "base": "models/forest_v13/final",
+    "terrain": "S16",
+    "ent": 0.005,
+    "lr": 0.0001,
+    "cfg": {
+     "tilt_rel_w": 2.5,
+     "alive_w": 0.3
+    }
+   },
+   "score": 0.0,
+   "gain": 0.0,
+   "accept": false
+  },
+  {
+   "iter": 5,
+   "action": "base_v13_bridge",
+   "params": {
+    "base": "models/forest_v13/final",
+    "terrain": "S16",
+    "ent": 0.005,
+    "lr": 0.0001,
+    "cfg": {
+     "tilt_rel_w": 2.5,
+     "alive_w": 0.3
+    }
+   },
+   "score": 0.0,
+   "gain": 0.0,
+   "accept": false
+  },
+  {
+   "iter": 6,
+   "action": "stall_reset",
+   "params": {
+    "terrain": "C2",
+    "ent": 0.008,
+    "lr": 5e-05,
+    "cfg": null
+   },
+   "score": 0.0,
+   "gain": 0.0,
+   "accept": false
+  },
+  {
+   "iter": 7,
+   "action": "tilt_boost",
+   "params": {
+    "terrain": "C1",
+    "ent": 0.004,
+    "lr": 7e-05,
+    "cfg": {
+     "tilt_rel_w": 3.0,
+     "tilt_abs_w": 0.2
+    }
+   },
+   "score": 0.0,
+   "gain": 0.0,
+   "accept": false
+  },
+  {
+   "iter": 8,
+   "action": "base_v13_bridge",
+   "params": {
+    "base": "models/forest_v13/final",
+    "terrain": "S16",
+    "ent": 0.005,
+    "lr": 0.0001,
+    "cfg": {
+     "tilt_rel_w": 2.5,
+     "alive_w": 0.3
+    }
+   },
+   "score": 0.0,
+   "gain": 0.0,
+   "accept": false
+  },
+  {
+   "iter": 9,
+   "action": "base_v13_bridge",
+   "params": {
+    "base": "models/forest_v13/final",
+    "terrain": "S16",
+    "ent": 0.005,
+    "lr": 0.0001,
+    "cfg": {
+     "tilt_rel_w": 2.5,
+     "alive_w": 0.3
+    }
+   },
+   "score": 0.0,
+   "gain": 0.0,
+   "accept": false
+  },
+  {
+   "iter": 10,
+   "action": "stall_reset",
+   "params": {
+    "terrain": "C2",
+    "ent": 0.008,
+    "lr": 5e-05,
+    "cfg": null
+   },
+   "score": 0.0,
+   "gain": 0.0,
+   "accept": false
+  },
+  {
+   "iter": 11,
+   "action": "tilt_boost",
+   "params": {
+    "terrain": "C1",
+    "ent": 0.004,
+    "lr": 7e-05,
+    "cfg": {
+     "tilt_rel_w": 3.0,
+     "tilt_abs_w": 0.2
+    }
+   },
+   "score": 0.0,
+   "gain": 0.0,
+   "accept": false
+  },
+  {
+   "iter": 12,
+   "action": "base_v13_bridge",
+   "params": {
+    "base": "models/forest_v13/final",
+    "terrain": "S16",
+    "ent": 0.005,
+    "lr": 0.0001,
+    "cfg": {
+     "tilt_rel_w": 2.5,
+     "alive_w": 0.3
+    }
+   },
+   "score": 0.0,
+   "gain": 0.0,
+   "accept": false
+  }
+ ]
+}

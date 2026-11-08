@@ -19,6 +19,19 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 WQ0 = np.tile(np.array([0.0, 0.55, -1.15], np.float32), 4)
 WHEEL_R = 0.075
 
+# RSI 可调奖励参数 (env_cfg.json 缺省值 = v14 硬编码值, 不配置时行为不变)
+CFG_DEFAULT = dict(prog_w=2.5, alive_w=0.2, tilt_rel_w=2.0, tilt_abs_w=0.4,
+                   tree_w=0.05, act_w=0.01, smooth_w=0.03, fall_tilt_deg=60.0)
+
+
+def _load_cfg():
+    try:
+        with open(os.path.join(BASE, 'env_cfg.json'), encoding='utf-8') as f:
+            c = json.load(f)
+        return {k: c.get(k, v) for k, v in CFG_DEFAULT.items()}
+    except Exception:
+        return dict(CFG_DEFAULT)
+
 
 class ForestWheelEnv(gym.Env):
     metadata = {'render_modes': []}
@@ -45,12 +58,13 @@ class ForestWheelEnv(gym.Env):
         self.h = terr.build_from_params(json.loads(
             (Path(asset_dir) / 'terrain_meta.json').read_text(encoding='utf-8')))
         lay = json.loads((Path(asset_dir) / 'forest_layout.json').read_text(encoding='utf-8'))
-        self.trees = np.array(lay['trees'], np.float32)      # x,y,r
+        self.trees = np.array(lay['trees'], np.float32).reshape(-1, 4)[:, :3]  # x,y,r (空表安全)
         self.observation_space = gym.spaces.Box(-np.inf, np.inf,
                                                 (57 if self.wheel else 49,), np.float32)
         self.action_space = gym.spaces.Box(-1.0, 1.0, (16 if self.wheel else 12,), np.float32)
         self._prev_pos = None
         self._prev_yaw = 0.0
+        self.cfg = _load_cfg()
 
     def _yaw(self):
         w, x, y, z = self.data.qpos[3:7]
@@ -134,13 +148,27 @@ class ForestWheelEnv(gym.Env):
         self._k += 1
         obs, gd = self._obs(a)
 
-        r = 2.5 * (self._distance - gd) / 0.02 + 0.2                        # 前进 + 存活
-        r -= 1.5 * float(np.linalg.norm(obs[3:5]))   # 倾斜惩罚(重)
-        r -= 0.05 * float(np.sum(np.maximum(0.0, 0.45 - obs[9:12])))  # 树近
-        r -= 0.01 * float(np.sum(a ** 2)) + 0.03 * float(np.sum(np.abs(a - self.last)))
+        C = self.cfg
+        r = C['prog_w'] * (self._distance - gd) / 0.02 + C['alive_w']        # 前进 + 存活
+        # 倾斜惩罚 v2 (2026-11 真实地形版): 惩罚机体上轴偏离"地形法线"的角距,
+        # 而非偏离重力 — 在陡坡上贴合坡面 (随坡倾侧) 才是正确姿态, 旧版强迫水平会被地形掀翻
+        pos = self.data.qpos
+        eps = 0.30
+        nx = (float(self.h(pos[0] - eps, pos[1])) - float(self.h(pos[0] + eps, pos[1]))) / (2 * eps)
+        ny = (float(self.h(pos[0], pos[1] - eps)) - float(self.h(pos[0], pos[1] + eps))) / (2 * eps)
+        nz = 1.0 / math.sqrt(nx * nx + ny * ny + 1.0)
+        n = np.array([nx * nz, ny * nz, nz])
+        w, x_, y_, z_ = pos[3:7]
+        u_b = np.array([2 * (x_ * z_ - w * y_), 2 * (y_ * z_ + w * x_),
+                        1 - 2 * (x_ * x_ + y_ * y_)])       # 机体上轴 (世界系)
+        tilt_excess = 1.0 - float(np.dot(u_b, n))
+        r -= C['tilt_rel_w'] * tilt_excess
+        r -= C['tilt_abs_w'] * float(np.linalg.norm(obs[3:5]))  # 绝对倾斜轻惩罚 (保留少量水平偏好)
+        r -= C['tree_w'] * float(np.sum(np.maximum(0.0, 0.45 - obs[9:12])))  # 树近
+        r -= C['act_w'] * float(np.sum(a ** 2)) + C['smooth_w'] * float(np.sum(np.abs(a - self.last)))
         z_rel = float(obs[12])
         reach = gd < 1.2
-        fallen = float(obs[5]) > -math.cos(math.radians(55)) or z_rel < 0.18 or z_rel > 0.8
+        fallen = float(obs[5]) > -math.cos(math.radians(C['fall_tilt_deg'])) or z_rel < 0.18 or z_rel > 0.85
         clearance = np.hypot(self.trees[:, 0] - self.data.qpos[0],
                              self.trees[:, 1] - self.data.qpos[1]) - self.trees[:, 2]
         collision = bool(np.any(clearance < 0.30))

@@ -88,6 +88,81 @@ def make_ramp_fn(slope_deg=24.2, span=24.0):
     return h
 
 
+# ---------------- 真实 DEM 地形 (2026-11: 雷波 30m DEM → 训练高度场) ----------------
+_DEM_CACHE = {}
+
+
+def _load_dem(dem_dir):
+    if dem_dir not in _DEM_CACHE:
+        with open(os.path.join(dem_dir, 'dem_meta.json'), encoding='utf-8') as f:
+            meta = json.load(f)
+        dem = np.load(os.path.join(dem_dir, 'dem_z12.npy')).astype(np.float32)
+        px = (2 ** meta['z']) * 256
+        _DEM_CACHE[dem_dir] = (dem, meta, px)
+    return _DEM_CACHE[dem_dir]
+
+
+def _dem_bilinear(dem, meta, px, lat, lon):
+    rad = math.radians(lat)
+    yw = (1.0 - math.log(math.tan(rad) + 1.0 / math.cos(rad)) / math.pi) / 2.0
+    r = yw * px - meta['y0'] * 256
+    c = (lon + 180.0) / 360.0 * px - meta['x0'] * 256
+    r = min(max(r, 0.0), dem.shape[0] - 1.001)
+    c = min(max(c, 0.0), dem.shape[1] - 1.001)
+    r0, c0 = int(r), int(c)
+    fr, fc = r - r0, c - c0
+    return (dem[r0, c0] * (1 - fr) * (1 - fc) + dem[r0, c0 + 1] * (1 - fr) * fc +
+            dem[r0 + 1, c0] * fr * (1 - fc) + dem[r0 + 1, c0 + 1] * fr * fc)
+
+
+def make_dem_fn(lat, lon, rot_deg=0.0, span=24.0, micro_amp=0.05,
+                seed=7, dem_dir=r'E:\forestrobo\data\leibo\dem'):
+    """真实 DEM 地形块: 以 (lat,lon) 为中心取 span×span 高度场, 局部坐标系旋转 rot_deg,
+    叠加足尺微观粗糙度 (30m DEM 无法分辨的 0.6-2m 波长起伏), 出生区整平。
+
+    坡度/坡向完全来自真实地形 → 巡逻路线上实际要走的坡。
+    """
+    rng = np.random.default_rng(seed)
+    octs = []
+    for wl, a in ((1.9, 1.0), (0.75, 0.55), (0.32, 0.25)):
+        k = 2 * np.pi / wl
+        d = rng.normal(size=2)
+        d /= np.linalg.norm(d)
+        octs.append((k * d[0], k * d[1], rng.uniform(0, 2 * np.pi), a * micro_amp))
+    rot = math.radians(rot_deg)
+    cr, sr = math.cos(rot), math.sin(rot)
+    lat0_rad = math.radians(lat)
+    m_per_deg_lat = 110574.0
+    m_per_deg_lon = 111320.0 * math.cos(lat0_rad)
+
+    def h(x, y):
+        x = np.asarray(x, float)
+        y = np.asarray(y, float)
+        scalar = x.ndim == 0
+        x_f, y_f = x.ravel(), y.ravel()
+        xe = x_f * cr - y_f * sr      # 局部系 → 东向
+        yn = x_f * sr + y_f * cr      # 局部系 → 北向
+        la = lat + yn / m_per_deg_lat
+        lo = lon + xe / m_per_deg_lon
+        dem, meta, px = _load_dem(dem_dir)
+        out = np.empty(la.shape, float)
+        for i in range(la.size):
+            out[i] = _dem_bilinear(dem, meta, px, float(la[i]), float(lo[i]))
+        out -= float(_dem_bilinear(dem, meta, px, lat, lon))  # 中心归零
+        if scalar:
+            out = float(out[0])
+        else:
+            out = out.reshape(x.shape)
+        for kx, ky, ph, a in octs:
+            out = out + a * np.sin(kx * x + ky * y + ph)
+        d = np.maximum(np.abs(x - 1.0) / 3.2, np.abs(y) / 2.6)
+        return out * _smoothstep(d)
+
+    h.params = dict(kind='dem', lat=lat, lon=lon, rot=rot_deg, span=span,
+                    micro_amp=micro_amp, seed=seed, dem_dir=dem_dir)
+    return h
+
+
 def build_from_params(p):
     """从元数据重建仿真用高度函数（含平移量, 与 MuJoCo 表面严格一致）"""
     if p['kind'] == 'ramp':
@@ -96,6 +171,9 @@ def build_from_params(p):
         base = make_rubble_fn(p['seed'], p['span'], p['n_mounds'],
                               tuple(p['mound_h']), tuple(p['mound_r']),
                               p['rough_amp'])
+    elif p['kind'] == 'dem':
+        base = make_dem_fn(p['lat'], p['lon'], p.get('rot', 0.0), p['span'],
+                           p.get('micro_amp', 0.05), p['seed'], p['dem_dir'])
     else:
         base = make_h_fn(p['seed'], p['span'], p['amp1'], p['amp2'], p['amp3'],
                          p['rough_amp'], p['tilt_deg'])
