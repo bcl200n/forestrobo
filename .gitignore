@@ -41,6 +41,8 @@ design/render/
 design/img/
 *.docx
 *.pdf
+!report/*.docx
+!report/*.pdf
 
 # 依赖与临时目录
 node_modules/
