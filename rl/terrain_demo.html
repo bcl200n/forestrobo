@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>雷波林场地形感知规划</title>
+<style>
+body{margin:0;background:#0d1117;color:#e6edf3;font-family:system-ui;display:flex;flex-direction:column;align-items:center}
+h2{margin:10px 0 2px;font-size:16px}
+.sub{font-size:12px;color:#8b949e;margin:2px 0 8px}
+#stats{font-family:Consolas,monospace;font-size:12px;color:#58a6ff;margin:4px 0}
+canvas{border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.5);cursor:crosshair}
+.ctrl{display:flex;gap:10px;margin:8px;flex-wrap:wrap;justify-content:center}
+button{padding:5px 14px;border-radius:6px;border:1px solid #30363d;background:#21262d;color:#e6edf3;cursor:pointer;font-size:12px}
+button:hover{background:#30363d}
+button.active{background:#1f6feb;border-color:#1f6feb}
+.legend{display:flex;gap:12px;font-size:11px;color:#8b949e;margin-top:4px;flex-wrap:wrap;justify-content:center}
+.sw{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:3px;vertical-align:middle}
+</style>
+</head>
+<body>
+<h2>雷波林场 · 地形感知路径规划</h2>
+<div class="sub">海拔 1232-1458m · 平均坡度 17.1° · 石斛/黄莲地块 · 25m 格网</div>
+<canvas id="cv"></canvas>
+<div id="stats">点击"规划路径"查看结果</div>
+<div class="ctrl">
+  <button id="bTerrain" class="active" onclick="setMode('terrain')">地形</button>
+  <button id="bSlope" onclick="setMode('slope')">坡度</button>
+  <button id="bCost" onclick="setMode('cost')">通行成本</button>
+  <button id="bPath" onclick="planPath()" style="background:#238636">规划路径</button>
+  <button onclick="location.reload()" style="border-color:#da3633">重置</button>
+</div>
+<div class="legend" id="legend"></div>
+<script>
+'use strict';
+var GS=40, CELL=22, W=GS*CELL;
+var cv=document.getElementById('cv');cv.width=W;cv.height=W;
+var ctx=cv.getContext('2d');
+var stats=document.getElementById('stats');
+var mode='terrain';
+var path=null;
+
+// 生成地形 (嵌入数据, 与 Python 端同 seed)
+var elev=[], slope=[];
+(function(){
+  var rng=42;
+  function rand(){rng=(rng*1664525+1013904223)>>>0;return rng/4294967296;}
+  // 低频噪声
+  var noise=[];
+  for(var y=0;y<GS;y++){noise[y]=[];for(var x=0;x<GS;x++){
+    var v=0;
+    v+=1.0*Math.sin(x*0.1+rand()*6)*Math.cos(y*0.08+rand()*3);
+    v+=0.4*Math.sin(x*0.25+rand()*6)*Math.cos(y*0.2+rand()*3);
+    v+=0.2*Math.sin(x*0.5+rand()*3)*Math.cos(y*0.4+rand()*2);
+    noise[y][x]=v;
+  }}
+  // 归一化
+  var mn=1e9,mx=-1e9;
+  for(y=0;y<GS;y++)for(x=0;x<GS;x++){if(noise[y][x]<mn)mn=noise[y][x];if(noise[y][x]>mx)mx=noise[y][x];}
+  // 高程 + 河谷
+  for(y=0;y<GS;y++)for(x=0;x<GS;x++){
+    var nv=(noise[y][x]-mn)/(mx-mn);
+    var river=20*(0.15+0.7*Math.pow(y/GS,0.7));
+    var rd=Math.abs(x-river)/GS;
+    var e=1232+400*nv-100*Math.exp(-rd*4);
+    elev.push([]);
+    elev[y]=elev[y]||[];elev[y][x]=e;
+  }
+  // 平滑 (简易盒滤波)
+  var sm=[];
+  for(y=0;y<GS;y++){sm[y]=[];for(x=0;x<GS;x++){
+    var s=0,n=0;
+    for(var dy=-2;dy<=2;dy++)for(var dx=-2;dx<=2;dx++){
+      var ny=y+dy,nx=x+dx;
+      if(ny>=0&&ny<GS&&nx>=0&&nx<GS){s+=elev[ny][nx];n++;}
+    }
+    sm[y][x]=s/n;
+  }}
+  elev=sm;
+  // 坡度
+  var mnS=1e9,mxS=-1e9;
+  slope=[];
+  for(y=0;y<GS;y++){slope[y]=[];for(x=0;x<GS;x++){
+    var y1=Math.max(0,y-1),y2=Math.min(GS-1,y+1);
+    var x1=Math.max(0,x-1),x2=Math.min(GS-1,x+1);
+    var dzdx=(elev[y][x2]-elev[y][x1])/(2*25);
+    var dzdy=(elev[y2][x]-elev[y1][x])/(2*25);
+    var sdeg=Math.atan(Math.sqrt(dzdx*dzdx+dzdy*dzdy))*180/Math.PI;
+    slope[y][x]=sdeg;
+    if(sdeg<mnS)mnS=sdeg;if(sdeg>mxS)mxS=sdeg;
+  }}
+})();
+
+// 地块
+var REGIONS=[
+  {name:'石斛',color:'#4a7c2e',poly:[[8,32],[10,35],[14,36],[18,34],[20,30],[18,26],[14,24],[10,25],[8,28]]},
+  {name:'黄莲',color:'#8b6914',poly:[[22,10],[26,8],[30,9],[34,12],[35,16],[33,20],[28,22],[24,20],[22,16]]},
+  {name:'待定A',color:'#4a4a4a',poly:[[10,8],[14,6],[17,8],[16,12],[12,14],[9,12]]},
+  {name:'待定B',color:'#4a4a4a',poly:[[28,28],[32,26],[35,28],[34,32],[30,34],[27,32]]}
+];
+
+function inPoly(x,y,poly){
+  var ins=false;
+  for(var i=0,j=poly.length-1;i<poly.length;j=i++){
+    if(((poly[i][1]>y)!==(poly[j][1]>y))&&
+       x<(poly[j][0]-poly[i][0])*(y-poly[i][1])/(poly[j][1]-poly[i][1])+poly[i][0])
+      ins=!ins;
+  }
+  return ins;
+}
+
+function costAt(sdeg){
+  if(sdeg<15)return 1;
+  if(sdeg<25)return 1.5;
+  if(sdeg<35)return 3;
+  if(sdeg<45)return 6;
+  return 999;
+}
+
+function setMode(m){
+  mode=m;
+  document.querySelectorAll('.ctrl button').forEach(function(b){b.classList.remove('active')});
+  var btn={'terrain':'bTerrain','slope':'bSlope','cost':'bCost'}[m];
+  if(btn)document.getElementById(btn).classList.add('active');
+  draw();
+  updateLegend();
+}
+
+function updateLegend(){
+  var l=document.getElementById('legend');
+  if(mode==='terrain'){
+    l.innerHTML='<span style="color:#8b949e">低海拔</span> → <span style="color:#e6edf3">高海拔</span> (色调由深到亮)';
+  }else if(mode==='slope'){
+    l.innerHTML='<span><span class="sw" style="background:#4caf50"></span>&lt;15°</span>'+
+      '<span><span class="sw" style="background:#ffc107"></span>15-25°</span>'+
+      '<span><span class="sw" style="background:#ff9800"></span>25-35°</span>'+
+      '<span><span class="sw" style="background:#f44336"></span>35-45°</span>'+
+      '<span><span class="sw" style="background:#d32f2f"></span>&gt;45°不可通行</span>';
+  }else{
+    l.innerHTML='<span><span class="sw" style="background:#4caf50"></span>低成本</span>'+
+      '<span><span class="sw" style="background:#ffc107"></span>中等</span>'+
+      '<span><span class="sw" style="background:#f44336"></span>高成本</span>';
+  }
+}
+
+function colorTerrain(e,lo,hi){
+  var t=(e-lo)/(hi-lo);
+  var r=Math.round(30+t*180);
+  var g=Math.round(60+t*140);
+  var b=Math.round(40+t*80);
+  return 'rgb('+r+','+g+','+b+')';
+}
+
+function colorSlope(s){
+  if(s<15)return '#4caf50';
+  if(s<25)return '#ffc107';
+  if(s<35)return '#ff9800';
+  if(s<45)return '#f44336';
+  return '#d32f2f';
+}
+
+function colorCost(s){
+  if(s<1.2)return '#4caf50';
+  if(s<2)return '#8bc34a';
+  if(s<3.5)return '#ffc107';
+  return '#f44336';
+}
+
+function draw(){
+  var lo=1232,hi=1458;
+  for(var y=0;y<GS;y++)for(var x=0;x<GS;x++){
+    var px=x*CELL,py=y*CELL;
+    var c;
+    if(mode==='terrain')c=colorTerrain(elev[y][x],lo,hi);
+    else if(mode==='slope')c=colorSlope(slope[y][x]);
+    else c=colorCost(costAt(slope[y][x]));
+    ctx.fillStyle=c;
+    ctx.fillRect(px,py,CELL-1,CELL-1);
+  }
+  // 地块边界
+  for(var r=0;r<REGIONS.length;r++){
+    var reg=REGIONS[r];
+    ctx.beginPath();
+    for(var p=0;p<reg.poly.length;p++){
+      var cx=reg.poly[p][0]*CELL,cy=reg.poly[p][1]*CELL;
+      if(p===0)ctx.moveTo(cx,cy);else ctx.lineTo(cx,cy);
+    }
+    ctx.closePath();
+    ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.setLineDash([4,3]);
+    ctx.stroke();ctx.setLineDash([]);
+    var lx=0,ly=0;
+    for(p=0;p<reg.poly.length;p++){lx+=reg.poly[p][0];ly+=reg.poly[p][1];}
+    lx/=reg.poly.length;ly/=reg.poly.length;
+    ctx.fillStyle='rgba(255,255,255,.9)';ctx.font='bold 11px sans-serif';
+    ctx.textAlign='center';ctx.fillText(reg.name,lx*CELL,ly*CELL);
+  }
+  if(path){
+    ctx.strokeStyle='#00e5ff';ctx.lineWidth=3;ctx.lineCap='round';
+    ctx.beginPath();
+    for(var i=0;i<path.length;i++){
+      var px=(path[i][0]+.5)*CELL,py=(path[i][1]+.5)*CELL;
+      if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+    if(path.length>0){
+      var s=path[0],g=path[path.length-1];
+      ctx.fillStyle='#00e5ff';
+      ctx.beginPath();ctx.arc((s[0]+.5)*CELL,(s[1]+.5)*CELL,5,0,7);ctx.fill();
+      ctx.beginPath();ctx.arc((g[0]+.5)*CELL,(g[1]+.5)*CELL,5,0,7);ctx.fill();
+    }
+  }
+}
+
+function planPath(){
+  // A* from (10,30) to (30,15)
+  var start=[10,30],goal=[30,15];
+  var open=[[0,start]];
+  var came={},gsc={};gsc[start.join()]=0;
+  var closed={};
+  while(open.length){
+    open.sort(function(a,b){return a[0]-b[0]});
+    var cur=open.shift()[1];
+    if(cur[0]===goal[0]&&cur[1]===goal[1]){
+      path=[cur];
+      while(cur.join() in came){
+        cur=came[cur.join()];path.unshift(cur);
+      }
+      var dist=path.length*25;
+      var climb=0;
+      for(var i=1;i<path.length;i++){
+        climb+=Math.abs(elev[path[i][1]][path[i][0]]-elev[path[i-1][1]][path[i-1][0]]);
+      }
+      stats.textContent='路径: '+path.length+' 格 · '+dist+'m · 爬升 '+Math.round(climb)+'m · 避开陡坡';
+      draw();
+      return;
+    }
+    closed[cur.join()]=1;
+    for(var dy=-1;dy<=1;dy++)for(var dx=-1;dx<=1;dx++){
+      if(!dx&&!dy)continue;
+      var nx=cur[0]+dx,ny=cur[1]+dy;
+      if(nx<0||nx>=GS||ny<0||ny>=GS)continue;
+      var nk=nx+','+ny;
+      if(closed[nk])continue;
+      var s=slope[ny][nx];
+      if(s>45)continue;
+      var step=25*Math.sqrt(dx*dx+dy*dy)*costAt(s);
+      step+=Math.abs(elev[ny][nx]-elev[cur[1]][cur[0]])*0.5;
+      var ng=(gsc[cur.join()]||0)+step;
+      if(!(nk in gsc)||ng<gsc[nk]){
+        gsc[nk]=ng;came[nk]=cur.join();
+        var h=Math.sqrt((nx-goal[0])*(nx-goal[0])+(ny-goal[1])*(ny-goal[1]))*25;
+        open.push([ng+h,[nx,ny]]);
+      }
+    }
+  }
+  stats.textContent='未找到路径';
+}
+
+cv.onclick=function(ev){
+  var r=cv.getBoundingClientRect();
+  var x=Math.floor((ev.clientX-r.left)/CELL);
+  var y=Math.floor((ev.clientY-r.top)/CELL);
+  if(x>=0&&x<GS&&y>=0&&y<GS){
+    stats.textContent='格('+x+','+y+') 海拔='+Math.round(elev[y][x])+'m 坡度='+slope[y][x].toFixed(1)+'° 通行成本='+costAt(slope[y][x]);
+  }
+};
+
+updateLegend();
+draw();
+</script>
+</body>
+</html>
