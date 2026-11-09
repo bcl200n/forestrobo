@@ -21,12 +21,14 @@ WHEEL_R = 0.075
 
 # RSI 可调奖励参数 (env_cfg.json 缺省值 = v14 硬编码值, 不配置时行为不变)
 CFG_DEFAULT = dict(prog_w=2.5, alive_w=0.2, tilt_rel_w=2.0, tilt_abs_w=0.4,
-                   tree_w=0.05, act_w=0.01, smooth_w=0.03, fall_tilt_deg=60.0)
+                   tree_w=0.05, act_w=0.01, smooth_w=0.03, fall_tilt_deg=60.0,
+                   rand_min_slope_deg=0.0, rand_max_slope_deg=12.0, contour_bias=1)
+CFG_PATH = os.path.join(BASE, 'env_cfg.json')
 
 
 def _load_cfg():
     try:
-        with open(os.path.join(BASE, 'env_cfg.json'), encoding='utf-8') as f:
+        with open(CFG_PATH, encoding='utf-8') as f:
             c = json.load(f)
         return {k: c.get(k, v) for k, v in CFG_DEFAULT.items()}
     except Exception:
@@ -65,6 +67,118 @@ class ForestWheelEnv(gym.Env):
         self._prev_pos = None
         self._prev_yaw = 0.0
         self.cfg = _load_cfg()
+        self._cfg_mtime = 0.0
+
+        # ---- 逐回合随机地形引擎 (v15): terrain_meta kind == 'rand' 时启用 ----
+        meta = json.loads((Path(asset_dir) / 'terrain_meta.json').read_text(encoding='utf-8'))
+        self._rand = meta.get('kind') == 'rand'
+        if self._rand:
+            self._elev = float(meta['elevation'])
+            self._span = float(meta['span'])
+            n = int(meta.get('n', 513))
+            ax = np.linspace(-self._span / 2, self._span / 2, n)
+            self._XG, self._YG = np.meshgrid(ax, ax)   # 行 = y (与 write_hfield 一致)
+            self._hf_data = self.model.hfield_data     # 运行时可写视图
+            self._rock_geoms, self._log_geoms = [], []
+            self._tree_geoms_l = sorted(self.tree_geoms)
+            for i in range(self.model.ngeom):
+                nm = mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_GEOM, i) or ''
+                if nm.startswith('rock_'):
+                    self._rock_geoms.append(i)
+                elif nm.startswith('log_'):
+                    self._log_geoms.append(i)
+            self._goal_angle_hint = None
+            self.h = lambda x, y: 0.0                  # 首次 reset 时替换
+
+    # ---------- v15: 逐回合地形采样 ----------
+    def _smoothstep(self, t):
+        t = np.clip(t, 0.0, 1.0)
+        return t * t * (3 - 2 * t)
+
+    def _sample_terrain(self):
+        """随机坡度/坡向/微地貌 → 重写 hfield_data + 解析高度函数 + 树石落位。
+        地形: H = tan(s)·(cosφ·x + sinφ·y) + Σ 正弦起伏, 出生区整平。
+        """
+        rng = self._rng
+        slope = math.radians(rng.uniform(self.cfg.get('rand_min_slope_deg', 0.0),
+                                         self.cfg.get('rand_max_slope_deg', 12.0)))
+        aspect = float(rng.uniform(0, 2 * math.pi))            # 上坡方向
+        k = math.tan(slope)
+        octs = []
+        for wl, amax in ((5.5, 0.16), (2.4, 0.09), (1.1, 0.05)):
+            ang = rng.uniform(0, 2 * math.pi)
+            d = np.array([math.cos(ang), math.sin(ang)])
+            kk = 2 * math.pi / wl
+            octs.append((kk * d[0], kk * d[1], float(rng.uniform(0, 2 * math.pi)),
+                         float(rng.uniform(0.35, 1.0) * amax)))
+        cx, sx = math.cos(aspect), math.sin(aspect)
+
+        def H(x, y):
+            x = np.asarray(x, float)
+            y = np.asarray(y, float)
+            out = k * (cx * x + sx * y)
+            for kx, ky, ph, a in octs:
+                out = out + a * np.sin(kx * x + ky * y + ph)
+            d = np.maximum(np.abs(x - 1.0) / 3.2, np.abs(y) / 2.6)
+            return out * self._smoothstep(d)
+
+        Hg = H(self._XG, self._YG)
+        shift = float(-Hg.min())
+        grid = np.clip((Hg + shift) / self._elev - 0.0049, 0.0, 1.0)
+        self._hf_data[:] = grid.astype(np.float32).ravel()
+
+        def h_fn(x, y):
+            return H(x, y) + shift
+
+        self.h = h_fn
+        self._terrain_shift = shift
+
+        # 树: 环形重落位 (坡度 <35° 处), 同步 geom_pos 与 self.trees
+        rows = []
+        for gi in self._tree_geoms_l:
+            for _ in range(60):
+                ang = rng.uniform(-math.pi, math.pi)
+                dist = rng.uniform(3.0, self._span * 0.8)
+                tx = 1.0 + math.cos(ang) * dist
+                ty = math.sin(ang) * dist
+                if abs(tx) > self._span / 2 - 1 or abs(ty) > self._span / 2 - 1:
+                    continue
+                e = 0.25
+                gxv = float(H(tx + e, ty) - H(tx - e, ty)) / (2 * e)
+                gyv = float(H(tx, ty + e) - H(tx, ty - e)) / (2 * e)
+                if math.hypot(gxv, gyv) > 0.7:
+                    continue
+                if any((r0[0] - tx) ** 2 + (r0[1] - ty) ** 2 < 1.5 for r0 in rows):
+                    continue
+                break
+            else:
+                tx, ty = 1.0 + self._span * 0.45, 0.0
+            r = float(self.model.geom_size[gi][0])
+            z = float(h_fn(tx, ty)) + 1.45
+            self.model.geom_pos[gi] = [tx, ty, z]
+            rows.append((tx, ty, r))
+        self.trees = np.array(rows, np.float32).reshape(-1, 3)
+
+        # 岩石/倒木: 贴地重落位
+        for gi in self._rock_geoms + self._log_geoms:
+            p = self.model.geom_pos[gi]
+            self.model.geom_pos[gi] = [p[0], p[1], float(h_fn(p[0], p[1]))]
+
+        # 等高线目标偏置: 目标方向 ≈ 坡向的垂线 (横坡行走) ± 扰动
+        if self.cfg.get('contour_bias', 1):
+            side = rng.choice([-1.0, 1.0])
+            self._goal_angle_hint = aspect + side * math.pi / 2 + rng.uniform(-0.5, 0.5)
+        else:
+            self._goal_angle_hint = None
+
+    def _maybe_reload_cfg(self):
+        try:
+            m = os.path.getmtime(CFG_PATH)
+            if m != self._cfg_mtime:
+                self._cfg_mtime = m
+                self.cfg = _load_cfg()
+        except OSError:
+            pass
 
     def _yaw(self):
         w, x, y, z = self.data.qpos[3:7]
@@ -115,6 +229,9 @@ class ForestWheelEnv(gym.Env):
         super().reset(seed=seed)
         if seed is not None:
             self._rng = np.random.default_rng(seed)
+        if self._rand:
+            self._maybe_reload_cfg()
+            self._sample_terrain()
         mujoco.mj_resetData(self.model, self.data)
         hd = float(self._rng.uniform(-math.pi, math.pi))
         x0, y0 = 1.0, float(self._rng.uniform(-0.8, 0.8))
@@ -122,7 +239,10 @@ class ForestWheelEnv(gym.Env):
         self.data.qpos[3:7] = [math.cos(hd / 2), 0, 0, math.sin(hd / 2)]
         self.data.qpos[self.leg_q] = self.q0
         mujoco.mj_forward(self.model, self.data)
-        ga = hd + self._rng.uniform(-1.2, 1.2)
+        if self._rand and self._goal_angle_hint is not None and self._rng.random() < 0.7:
+            ga = self._goal_angle_hint + self._rng.uniform(-0.6, 0.6)   # 等高线偏置
+        else:
+            ga = hd + self._rng.uniform(-1.2, 1.2)
         gd = self._rng.uniform(4.0, 7.0)
         self.goal = np.array([x0 + math.cos(ga) * gd,
                               y0 + math.sin(ga) * gd])
