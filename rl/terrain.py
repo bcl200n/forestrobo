@@ -88,6 +88,32 @@ def make_ramp_fn(slope_deg=24.2, span=24.0):
     return h
 
 
+def make_detour_fn(span=24.0, ridge_x=5.0, ridge_h=1.6, ridge_w=1.5,
+                   ridge_half_len=2.6, base_tilt_deg=5.0, seed=7):
+    """绕行考场: 缓坡基础 + 一道横在出生点-目标直线上的陡脊 (y 向有限长, 可绕端点)。
+
+    直线穿越 = 爬 ~40° 脊壁; 绕脊端 (|y|>half_len) = 走缓坡 — 用于验证缓坡偏好奖励。
+    """
+    k = np.tan(np.radians(base_tilt_deg))
+
+    def h(x, y):
+        x = np.asarray(x, float)
+        y = np.asarray(y, float)
+        out = k * x
+        # 陡脊: 高斯截面 (x 向) × 有限长度 (y 向, 余弦滚降)
+        gx = np.exp(-((x - ridge_x) ** 2) / (2 * (ridge_w / 2) ** 2))
+        len_f = np.clip((np.abs(y) - ridge_half_len) / 1.2, 0, 1)
+        ymask = np.cos(len_f * np.pi / 2) ** 2
+        out = out + ridge_h * gx * ymask
+        d = np.maximum(np.abs(x - 1.0) / 3.2, np.abs(y) / 2.6)
+        return out * _smoothstep(d)
+
+    h.params = dict(kind='detour', span=span, ridge_x=ridge_x, ridge_h=ridge_h,
+                    ridge_w=ridge_w, ridge_half_len=ridge_half_len,
+                    base_tilt_deg=base_tilt_deg, seed=seed)
+    return h
+
+
 # ---------------- 真实 DEM 地形 (2026-11: 雷波 30m DEM → 训练高度场) ----------------
 _DEM_CACHE = {}
 
@@ -167,6 +193,9 @@ def build_from_params(p):
     """从元数据重建仿真用高度函数（含平移量, 与 MuJoCo 表面严格一致）"""
     if p['kind'] == 'ramp':
         base = make_ramp_fn(p['slope_deg'], p.get('span', 24.0))
+    elif p['kind'] == 'detour':
+        base = make_detour_fn(p['span'], p['ridge_x'], p['ridge_h'], p['ridge_w'],
+                              p['ridge_half_len'], p['base_tilt_deg'], p.get('seed', 7))
     elif p['kind'] == 'rubble':
         base = make_rubble_fn(p['seed'], p['span'], p['n_mounds'],
                               tuple(p['mound_h']), tuple(p['mound_r']),
