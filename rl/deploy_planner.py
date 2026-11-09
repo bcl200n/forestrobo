@@ -853,4 +853,37 @@ html = (html
 
 with open(OUT, 'w', encoding='utf-8') as f:
     f.write(html)
-print('已生成 {} ({:.2f} MB) + hillshade.png'.format(OUT, len(html.encode('utf-8')) / 1048576))
+
+# 导出结构化部署方案
+plan = {
+    'meta': {
+        'farms': {f: {'dogs': 0, 'comps': 0, 'mu': 0.0, 'route_km': 0.0, 'hours': 0.0,
+                      'sorties': 0, 'swaps': 0, 'wh': 0, 'max_cycle': 0, 'slope': 0.0}
+                  for f in TARGET_ZONES},
+        'battery': {'pack_wh': PACK_WH, 'usable': USABLE, 'p_move': P_MOVE,
+                    'swap_min': SWAP_MIN, 'sorties_per_day': SORTIES_PER_DAY},
+    },
+    'zones': [],
+}
+farm_slope = {}
+for farm in TARGET_ZONES:
+    fl = [c for c in comps if c['farm'] == farm]
+    farm_slope[farm] = sum(c['slope'] for c in fl) / len(fl) if fl else 0
+for z in zones:
+    fm = plan['meta']['farms'][z['farm']]
+    fm['dogs'] += 1
+    fm['comps'] += z['n']
+    fm['mu'] += z['mu']
+    fm['route_km'] += z['km']
+    fm['hours'] += z['hours']
+    fm['sorties'] += z['sorties']
+    fm['swaps'] += z['swaps']
+    fm['wh'] += z['wh']
+    fm['max_cycle'] = max(fm['max_cycle'], z['cycle'])
+    fm['slope'] = farm_slope[z['farm']]
+    plan['zones'].append({k: v for k, v in z.items() if k != 'members'} | {'members': z['members']})
+
+with open(r'E:\forestrobo\rl\deployment_plan.json', 'w', encoding='utf-8') as f:
+    json.dump(plan, f, ensure_ascii=False, indent=1)
+print('已生成 {} ({:.2f} MB) + hillshade.png + deployment_plan.json'.format(
+    OUT, len(html.encode('utf-8')) / 1048576))
