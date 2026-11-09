@@ -22,6 +22,7 @@ WHEEL_R = 0.075
 # RSI 可调奖励参数 (env_cfg.json 缺省值 = v14 硬编码值, 不配置时行为不变)
 CFG_DEFAULT = dict(prog_w=2.5, alive_w=0.2, tilt_rel_w=2.0, tilt_abs_w=0.4,
                    tree_w=0.05, act_w=0.01, smooth_w=0.03, fall_tilt_deg=60.0,
+                   head_w=0.0,
                    rand_min_slope_deg=0.0, rand_max_slope_deg=12.0, contour_bias=1)
 CFG_PATH = os.path.join(BASE, 'env_cfg.json')
 
@@ -270,6 +271,8 @@ class ForestWheelEnv(gym.Env):
 
         C = self.cfg
         r = C['prog_w'] * (self._distance - gd) / 0.02 + C['alive_w']        # 前进 + 存活
+        # 航向对齐 (v16): 奖励面朝目标 — 否则轮式底盘会学出倒车/蟹行的局部最优
+        r += C['head_w'] * float(obs[7])
         # 倾斜惩罚 v2 (2026-11 真实地形版): 惩罚机体上轴偏离"地形法线"的角距,
         # 而非偏离重力 — 在陡坡上贴合坡面 (随坡倾侧) 才是正确姿态, 旧版强迫水平会被地形掀翻
         pos = self.data.qpos
