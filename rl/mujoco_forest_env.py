@@ -23,7 +23,7 @@ WHEEL_R = 0.075
 CFG_DEFAULT = dict(prog_w=2.5, alive_w=0.2, tilt_rel_w=2.0, tilt_abs_w=0.4,
                    tree_w=0.05, act_w=0.01, smooth_w=0.03, fall_tilt_deg=60.0,
                    head_w=0.0, fwd_vel_w=0.0, lat_w=0.0,
-                   steep_w=0.0, steep_ref_deg=18.0,
+                   steep_w=0.0, steep_ref_deg=18.0, lookahead=False,
                    rand_min_slope_deg=0.0, rand_max_slope_deg=12.0, contour_bias=1)
 CFG_PATH = os.path.join(BASE, 'env_cfg.json')
 
@@ -63,8 +63,12 @@ class ForestWheelEnv(gym.Env):
             (Path(asset_dir) / 'terrain_meta.json').read_text(encoding='utf-8')))
         lay = json.loads((Path(asset_dir) / 'forest_layout.json').read_text(encoding='utf-8'))
         self.trees = np.array(lay['trees'], np.float32).reshape(-1, 4)[:, :3]  # x,y,r (空表安全)
-        self.observation_space = gym.spaces.Box(-np.inf, np.inf,
-                                                (57 if self.wheel else 49,), np.float32)
+        # v20: 地形前瞻观测 (+7, env_cfg.json "lookahead": true 时启用; 默认关=兼容旧策略)
+        self._use_lookahead = bool(_load_cfg().get('lookahead', False))
+        self._lookahead = [(1.0, 0.0), (1.6, 0.0), (2.2, 0.0), (2.8, 0.0), (3.4, 0.0),
+                           (2.2, 0.7), (2.2, -0.7)]
+        n_obs = (57 if self.wheel else 49) + (len(self._lookahead) if self._use_lookahead else 0)
+        self.observation_space = gym.spaces.Box(-np.inf, np.inf, (n_obs,), np.float32)
         self.action_space = gym.spaces.Box(-1.0, 1.0, (16 if self.wheel else 12,), np.float32)
         self._prev_pos = None
         self._prev_yaw = 0.0
@@ -222,9 +226,15 @@ class ForestWheelEnv(gym.Env):
                     laser[m] = max(0.0, dn[s].min())
         z_rel = pos[2] - float(self.h(pos[0], pos[1]))
         wheel_w = d.qvel[self.wheel_v]
+        # 地形前瞻 (v20): 各采样点相对当前位置的高程差 (0.3m 归一 ≈ 17°/单位)
+        z0 = float(self.h(pos[0], pos[1]))
+        preview = [0.3 * ((float(self.h(pos[0] + math.cos(yaw + da) * dist,
+                                  pos[1] + math.sin(yaw + da) * dist)) - z0))
+                   for dist, da in self._lookahead] if self._use_lookahead else []
         return np.concatenate([
             v_body, grav, [yawr], goal_b, laser, [z_rel],
-            d.qpos[self.leg_q] - self.q0, d.qvel[self.leg_v], last, wheel_w * 0.05
+            d.qpos[self.leg_q] - self.q0, d.qvel[self.leg_v], last, wheel_w * 0.05,
+            preview
         ]).astype(np.float32), gd
 
     def reset(self, *, seed=None, options=None):
