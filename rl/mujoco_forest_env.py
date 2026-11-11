@@ -23,7 +23,7 @@ WHEEL_R = 0.075
 CFG_DEFAULT = dict(prog_w=2.5, alive_w=0.2, tilt_rel_w=2.0, tilt_abs_w=0.4,
                    tree_w=0.05, act_w=0.01, smooth_w=0.03, fall_tilt_deg=60.0,
                    head_w=0.0, fwd_vel_w=0.0, lat_w=0.0,
-                   steep_w=0.0, steep_ref_deg=18.0, lookahead=False,
+                   steep_w=0.0, steep_ref_deg=18.0, lookahead=False, rev_scale=1.0,
                    rand_min_slope_deg=0.0, rand_max_slope_deg=12.0, contour_bias=1)
 CFG_PATH = os.path.join(BASE, 'env_cfg.json')
 
@@ -272,7 +272,10 @@ class ForestWheelEnv(gym.Env):
         a = np.clip(a, -1, 1)
         self.data.ctrl[:12] = self.q0 + a[:12] * 0.35
         if self.wheel:
-            self.data.ctrl[12:16] = a[12:] * 30.0
+            # v22: 非对称轮速限幅 — 反转只给 30% 力度, 物理上让倒车低效
+            rev_scale = self.cfg.get('rev_scale', 1.0)
+            wheel_cmds = np.where(a[12:] < 0, a[12:] * rev_scale * 30.0, a[12:] * 30.0)
+            self.data.ctrl[12:16] = wheel_cmds
         energy = 0.0
         for _ in range(4):
             mujoco.mj_step(self.model, self.data)
